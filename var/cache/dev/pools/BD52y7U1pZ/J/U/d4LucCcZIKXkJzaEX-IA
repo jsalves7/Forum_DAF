@@ -1,0 +1,28 @@
+<?php //%255BApp%255CDomain%255CUserManagement%255COAuth2%255CClient%2524identifier%255D%255B1%255D
+
+namespace Symfony\Component\VarExporter\Internal;
+
+return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
+    $o = [
+        clone (($p = &Registry::$prototypes)['Doctrine\\ORM\\Mapping\\Id'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Id')),
+        clone ($p['Doctrine\\ORM\\Mapping\\Column'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Column')),
+        clone ($p['Doctrine\\ORM\\Mapping\\GeneratedValue'] ?? Registry::p('Doctrine\\ORM\\Mapping\\GeneratedValue')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                1 => 'id',
+            ],
+            'strategy' => [
+                2 => 'NONE',
+            ],
+        ],
+    ],
+    [
+        $o[0],
+        $o[1],
+        $o[2],
+    ],
+    []
+);

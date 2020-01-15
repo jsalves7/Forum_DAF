@@ -131,3 +131,7 @@ services:
         public: true
         arguments:
             $container: '@service_container'
+
+    League\Event\EmitterInterface:
+        class: League\Event\Emmiter
+        public: true

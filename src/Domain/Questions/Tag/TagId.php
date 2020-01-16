@@ -1,15 +1,9 @@
 <?php
 
-namespace App\Domain\Tags\Tag;
+namespace App\Domain\Questions\Tag;
 
 use App\Domain\Common\RootAggregatorId;
 
-/**
- * TagId
- *
- * @package App\Domain\Tags\Tag
- */
 class TagId extends RootAggregatorId
 {
-
 }

@@ -6,11 +6,14 @@ use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Events\QuestionWasCreated;
 use App\Domain\Questions\Events\QuestionWasEdited;
+use App\Domain\Questions\Events\TagsWereUpdated;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 /**
  * Question
@@ -75,6 +78,14 @@ class Question implements EventGenerator
      */
     private $lastEditedOn;
 
+    /**
+     * @var ArrayCollection|Tag[]
+     * @ORM\ManyToMany(targetEntity="Tag")
+     * @ORM\JoinTable(name="question_tags",
+     *      joinColumns={@ORM\JoinColumn(name="question_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      )
+     */
     private $tags;
 
     /**
@@ -84,7 +95,7 @@ class Question implements EventGenerator
      * @param string $question
      * @param string $description
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(UserId $userId, string $question, string $description)
     {
@@ -133,12 +144,14 @@ class Question implements EventGenerator
     }
 
     /**
+     * edit
+     *
      * @param string $question
      * @param string $description
      *
      * @return Question
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function edit(string $question, string $description): Question
     {
@@ -154,15 +167,27 @@ class Question implements EventGenerator
         return $this->lastEditedOn;
     }
 
+    /**
+     * tags
+     *
+     * @return ArrayCollection
+     */
     public function tags(): ArrayCollection
     {
         return $this->tags;
     }
 
-    public function updateTags($argument1)
+    /**
+     * Updates question tags
+     *
+     * @param Collection $tags
+     *
+     * @return Question
+     */
+    public function updateTags(Collection $tags): Question
     {
-        // TODO: write logic here
+        $this->tags = $tags;
+        $this->recordThat(new TagsWereUpdated($this->questionId, $tags));
+        return $this;
     }
-
-
 }

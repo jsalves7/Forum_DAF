@@ -7,7 +7,6 @@ use App\Domain\Questions\QuestionSpecification;
 
 class OpenQuestion implements QuestionSpecification
 {
-
     /**
      * @inheritDoc
      */

@@ -5,10 +5,10 @@ namespace spec\App\Domain\Questions;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Events\QuestionWasCreated;
 use App\Domain\Questions\Events\QuestionWasEdited;
+use App\Domain\Questions\Events\TagsWereUpdated;
 use App\Domain\Questions\Question;
-use App\Domain\Tags\Tag;
+use App\Domain\Questions\Tag;
 use App\Domain\UserManagement\User\UserId;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
@@ -61,7 +61,7 @@ class QuestionSpec extends ObjectBehavior
 
     function it_has_an_applied_date_time()
     {
-        $this->appliedOn()->shouldBeAnInstanceOf(DateTimeImmutable::class);
+        $this->appliedOn()->shouldBeAnInstanceOf(\DateTimeImmutable::class);
     }
 
     function it_has_an_open_state()
@@ -79,16 +79,21 @@ class QuestionSpec extends ObjectBehavior
 
         $this->question()->shouldBe($question);
         $this->description()->shouldBe($description);
-        $this->lastEditedOn()->shouldBeAnInstanceOf(DateTimeImmutable::class);
+        $this->lastEditedOn()->shouldBeAnInstanceOf(\DateTimeImmutable::class);
         $this->releaseEvents()[0]->shouldBeAnInstanceOf(QuestionWasEdited::class);
     }
 
     function it_can_update_its_tags()
     {
+        $this->releaseEvents();
         $this->tags()->shouldBeAnInstanceOf(Collection::class);
-        $this->updateTags(new ArrayCollection([
+        $collection = new ArrayCollection([
             new Tag('test1'),
             new Tag('test2')
-        ]))->shouldBe($this->getWrappedObject());
+        ]);
+        $this->updateTags($collection)->shouldBe($this->getWrappedObject());
+
+        $this->tags()->shouldBe($collection);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(TagsWereUpdated::class);
     }
 }

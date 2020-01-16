@@ -10,7 +10,7 @@
 
 namespace App\Domain\Questions;
 
-use App\Domain\Exceptions\QuestionNotFound;
+use App\Domain\Exception\QuestionNotFound;
 use App\Domain\Questions\Question\QuestionId;
 
 /**
@@ -36,8 +36,7 @@ interface QuestionsRepository
      * @param QuestionId $questionId
      *
      * @return Question
-     *
-     * @throws QuestionNotFound when there is no questions with the given id
+     * @throws QuestionNotFound when there are no questions with the given ID
      */
     public function withId(QuestionId $questionId): Question;
 
@@ -49,5 +48,4 @@ interface QuestionsRepository
      * @return Question
      */
     public function update(Question $question): Question;
-
 }

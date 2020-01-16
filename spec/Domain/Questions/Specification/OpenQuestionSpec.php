@@ -3,8 +3,8 @@
 namespace spec\App\Domain\Questions\Specification;
 
 use App\Domain\Questions\Question;
-use App\Domain\Questions\Specification\OpenQuestion;
 use App\Domain\Questions\QuestionSpecification;
+use App\Domain\Questions\Specification\OpenQuestion;
 use PhpSpec\ObjectBehavior;
 
 class OpenQuestionSpec extends ObjectBehavior

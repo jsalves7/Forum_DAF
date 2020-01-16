@@ -1,21 +1,21 @@
 <?php
 
-namespace spec\App\Application\Tags;
+namespace spec\App\Application\Questions;
 
+use App\Application\Questions\UpdateTagsCommand;
 use App\Domain\Questions\Question\QuestionId;
-use App\Application\Tags\UpdateTagsCommand;
 use PhpSpec\ObjectBehavior;
 
 class UpdateTagsCommandSpec extends ObjectBehavior
 {
 
-    private $questionId;
     private $tags;
+    private $questionId;
 
     function let()
     {
-        $this->questionId = new QuestionId();
         $this->tags = ['tag1', 'tag2'];
+        $this->questionId = new QuestionId();
         $this->beConstructedWith($this->questionId, $this->tags);
     }
 

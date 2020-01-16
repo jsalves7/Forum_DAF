@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Application\Tags;
+namespace App\Application\Questions;
 
 use App\Domain\Questions\Question\QuestionId;
+use App\Domain\Questions\Tag;
 
 class UpdateTagsCommand
 {
@@ -11,16 +12,15 @@ class UpdateTagsCommand
      */
     private $questionId;
     /**
-     * @var array
+     * @var Tag[]|array
      */
     private $tags;
 
     /**
-     * UpdateTagsCommand constructor.
+     * Creates a UpdateTagsCommand
      *
      * @param QuestionId $questionId
-     *
-     * @param array $tags
+     * @param array|Tag[] $tags
      */
     public function __construct(QuestionId $questionId, array $tags)
     {
@@ -29,6 +29,8 @@ class UpdateTagsCommand
     }
 
     /**
+     * questionId
+     *
      * @return QuestionId
      */
     public function questionId(): QuestionId
@@ -37,6 +39,8 @@ class UpdateTagsCommand
     }
 
     /**
+     * tags
+     *
      * @return array|Tag[]
      */
     public function tags(): array

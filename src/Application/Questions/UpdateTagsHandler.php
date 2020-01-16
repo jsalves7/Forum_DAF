@@ -9,77 +9,83 @@ use App\Domain\Questions\Question;
 use App\Domain\Questions\QuestionsRepository;
 use App\Domain\Questions\Specification\OpenQuestion;
 use App\Domain\Questions\Specification\QuestionOwner;
+use App\Domain\Questions\Tag\TagsRepository;
 
-class EditQuestionHandler
+class UpdateTagsHandler
 {
     /**
      * @var QuestionsRepository
      */
     private $questions;
     /**
-     * @var OpenQuestion
+     * @var TagsRepository
      */
-    private $openQuestion;
+    private $tagsRepository;
+    /**
+     * @var EventPublisher
+     */
+    private $eventPublisher;
     /**
      * @var QuestionOwner
      */
     private $questionOwner;
     /**
-     * @var EventPublisher
+     * @var OpenQuestion
      */
-    private $eventPublisher;
+    private $openQuestion;
 
     /**
-     * Creates a EditQuestionHandler
+     * Creates a UpdateTagsHandler
      *
      * @param QuestionsRepository $questions
-     * @param OpenQuestion $openQuestion
-     * @param QuestionOwner $questionOwner
+     * @param TagsRepository $tagsRepository
      * @param EventPublisher $eventPublisher
+     * @param QuestionOwner $questionOwner
+     * @param OpenQuestion $openQuestion
      */
     public function __construct(
         QuestionsRepository $questions,
-        OpenQuestion $openQuestion,
+        TagsRepository $tagsRepository,
+        EventPublisher $eventPublisher,
         QuestionOwner $questionOwner,
-        EventPublisher $eventPublisher
+        OpenQuestion$openQuestion
     ) {
         $this->questions = $questions;
-        $this->openQuestion = $openQuestion;
-        $this->questionOwner = $questionOwner;
+        $this->tagsRepository = $tagsRepository;
         $this->eventPublisher = $eventPublisher;
+        $this->questionOwner = $questionOwner;
+        $this->openQuestion = $openQuestion;
     }
 
     /**
      * handle
      *
-     * @param EditQuestionCommand $command
+     * @param UpdateTagsCommand $command
      *
      * @return Question
-     *
-     * @throws \Exception
      */
-    public function handle(EditQuestionCommand $command): Question
+    public function handle(UpdateTagsCommand $command): Question
     {
         $question = $this->questions->withId($command->questionId());
 
         if (!$this->questionOwner->isSatisfiedBy($question)) {
             throw new InvalidQuestionOwner(
-                "Only the question's owner can edit this question."
+                "You cannot make changes to a question that don't belongs to you."
             );
         }
 
-        if(!$this->openQuestion->isSatisfiedBy($question)) {
+        if (!$this->openQuestion->isSatisfiedBy($question)) {
             throw new InvalidQuestionState(
-                "It only possible to edit a open question. This question is already closed."
+                "You cannot change the question. It's already closed."
             );
         }
 
+        $tags = $this->tagsRepository->getList($command->tags());
         $this->eventPublisher->publishEventsFrom(
             $this->questions->update(
-                $question->edit($command->question(), $command->description())
+                $question->updateTags($tags)
             )
         );
-
         return $question;
     }
 }

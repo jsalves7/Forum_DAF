@@ -8,9 +8,16 @@ use App\Domain\UserManagement\UserIdentifier;
 
 class QuestionOwner implements QuestionSpecification
 {
-
+    /**
+     * @var UserIdentifier
+     */
     private $identifier;
 
+    /**
+     * Creates a QuestionOwner
+     *
+     * @param UserIdentifier $identifier
+     */
     public function __construct(UserIdentifier $identifier)
     {
         $this->identifier = $identifier;

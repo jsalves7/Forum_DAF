@@ -16,8 +16,10 @@ class QuestionOwnerSpec extends ObjectBehavior
     function let(UserIdentifier $identifier, User $loggedInUser)
     {
         $this->userId = new User\UserId();
+
         $loggedInUser->userId()->willReturn($this->userId);
         $identifier->currentUser()->willReturn($loggedInUser);
+
         $this->beConstructedWith($identifier);
     }
 
@@ -31,16 +33,15 @@ class QuestionOwnerSpec extends ObjectBehavior
         $this->shouldBeAnInstanceOf(QuestionSpecification::class);
     }
 
-    function it_checks_true_when_owner_is_current_logged_in_user(Question $question)
+    function it_check_true_when_owner_is_current_logged_in_user(Question $question)
     {
         $question->userId()->willReturn($this->userId);
         $this->isSatisfiedBy($question)->shouldBe(true);
     }
 
-    function it_check_false_when_owner_is_not_current_user(Question $question)
+    function it_check_false_when_owner_is_note_current_user(Question $question)
     {
         $question->userId()->willReturn(new User\UserId());
         $this->isSatisfiedBy($question)->shouldBe(false);
     }
-
 }

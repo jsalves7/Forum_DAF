@@ -63,8 +63,7 @@ class EditQuestionHandlerSpec extends ObjectBehavior
         $question->edit($newQuestion, $description)
             ->shouldHaveBeenCalled();
         $questions->update($question)->shouldHaveBeenCalled();
-        $eventPublisher->publishEventsFrom();
-
+        $eventPublisher->publishEventsFrom($question)->shouldHaveBeenCalled();
     }
 
     function it_throws_an_exception_when_user_is_not_the_owner(QuestionOwner $questionOwner, Question $question)

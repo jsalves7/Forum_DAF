@@ -3,6 +3,10 @@
 namespace App\Domain\Answers;
 
 use App\Domain\Answers\Answer\AnswerId;
+use App\Domain\Answers\Events\AnswerWasCreated;
+use App\Domain\Answers\Events\AnswerWasEdited;
+use App\Domain\Events\EventGenerator;
+use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
 use App\Domain\Votes\Vote;
@@ -17,8 +21,11 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="answers")
  */
-class Answer
+class Answer implements EventGenerator
 {
+
+    use EventGeneratorMethods;
+
     /**
      * @var AnswerId
      *
@@ -111,6 +118,7 @@ class Answer
         $this->negativeVotes = 0;
         $this->accepted = $accepted;
         $this->givenOn = new DateTimeImmutable();
+        $this->recordThat(new AnswerWasCreated($this));
     }
 
     public function answerId(): AnswerId
@@ -148,11 +156,17 @@ class Answer
         return $this->accepted = true;
     }
 
+    /**
+     * @param string $description
+     * @return Answer
+     *
+     * @throws \Exception
+     */
     public function edit(string $description): Answer
     {
         $this->description = $description;
         $this->lastEditedOn = new DateTimeImmutable();
-        // TODO: it should register an event
+        $this->recordThat(new AnswerWasEdited($this->answerId, $description));
         return $this;
     }
 
@@ -188,6 +202,5 @@ class Answer
             return $this->negativeVotes;
         }
     }
-
 
 }

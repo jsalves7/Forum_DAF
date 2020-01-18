@@ -96,4 +96,5 @@ class QuestionSpec extends ObjectBehavior
         $this->tags()->shouldBe($collection);
         $this->releaseEvents()[0]->shouldBeAnInstanceOf(TagsWereUpdated::class);
     }
+
 }

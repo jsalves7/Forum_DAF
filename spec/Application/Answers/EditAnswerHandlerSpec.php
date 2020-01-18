@@ -9,6 +9,7 @@ use App\Domain\Answers\Answer\AnswerId;
 use App\Domain\Answers\AnswersRepository;
 use App\Domain\Answers\Specification\AcceptedAnswer;
 use App\Domain\Answers\Specification\AnswerOwner;
+use App\Domain\Events\EventPublisher;
 use App\Domain\Exceptions\InvalidAnswerOwner;
 use App\Domain\Exceptions\InvalidAnswerState;
 use App\Domain\Questions\Question;
@@ -28,6 +29,7 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         AnswerOwner $answerOwner,
         AcceptedAnswer $acceptedAnswer,
         QuestionsRepository $questions,
+        EventPublisher $eventPublisher,
         Question $question,
         Answer $answer
     ) {
@@ -47,7 +49,7 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         )
             ->willReturn($answer);
 
-        $this->beConstructedWith($answers, $answerOwner, $acceptedAnswer);
+        $this->beConstructedWith($answers, $answerOwner, $acceptedAnswer, $eventPublisher);
     }
 
     function it_is_initializable()
@@ -55,7 +57,7 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         $this->shouldHaveType(EditAnswerHandler::class);
     }
 
-    function it_handles_the_edit_answer_command(Answer $answer, AnswersRepository $answers)
+    function it_handles_the_edit_answer_command(Answer $answer, AnswersRepository $answers, EventPublisher $eventPublisher)
     {
         $description = "A given description";
         $command = new EditAnswerCommand(
@@ -65,6 +67,7 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         $this->handle($command)->shouldBe($answer);
         $answer->edit($description)->shouldHaveBeenCalled();
         $answers->update($answer)->shouldHaveBeenCalled();
+        $eventPublisher->publishEventsFrom($answer)->shouldHaveBeenCalled();
     }
 
     function it_throws_an_exception_when_user_is_not_the_owner(AnswerOwner $answerOwner, Answer $answer)

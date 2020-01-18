@@ -6,6 +6,7 @@ use App\Domain\Answers\Answer;
 use App\Domain\Answers\AnswersRepository;
 use App\Domain\Answers\Specification\AcceptedAnswer;
 use App\Domain\Answers\Specification\AnswerOwner;
+use App\Domain\Events\EventPublisher;
 use App\Domain\Exceptions\InvalidAnswerOwner;
 use App\Domain\Exceptions\InvalidAnswerState;
 
@@ -25,6 +26,10 @@ class EditAnswerHandler
      * @var AcceptedAnswer
      */
     private $acceptedAnswer;
+    /**
+     * @var EventPublisher
+     */
+    private $eventPublisher;
 
     /**
      * Creates a EditAnswerHandler
@@ -32,12 +37,14 @@ class EditAnswerHandler
      * @param AnswersRepository $answers
      * @param AnswerOwner $answerOwner
      * @param AcceptedAnswer $acceptedAnswer
+     * @param EventPublisher $eventPublisher
      */
-    public function __construct(AnswersRepository $answers, AnswerOwner $answerOwner, AcceptedAnswer $acceptedAnswer)
+    public function __construct(AnswersRepository $answers, AnswerOwner $answerOwner, AcceptedAnswer $acceptedAnswer, EventPublisher $eventPublisher)
     {
         $this->answers = $answers;
         $this->answerOwner = $answerOwner;
         $this->acceptedAnswer = $acceptedAnswer;
+        $this->eventPublisher = $eventPublisher;
     }
 
     public function handle(EditAnswerCommand $command): Answer
@@ -56,8 +63,12 @@ class EditAnswerHandler
             );
         }
 
-        return $this->answers->update(
-            $answer->edit($command->description())
+        $this->eventPublisher->publishEventsFrom(
+            $this->answers->update(
+                $answer->edit($command->description())
+            )
         );
+
+        return $answer;
     }
 }

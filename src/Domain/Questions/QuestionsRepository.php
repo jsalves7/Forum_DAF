@@ -10,7 +10,7 @@
 
 namespace App\Domain\Questions;
 
-use App\Domain\Exception\QuestionNotFound;
+use App\Domain\Exceptions\QuestionNotFound;
 use App\Domain\Questions\Question\QuestionId;
 
 /**
@@ -48,4 +48,11 @@ interface QuestionsRepository
      * @return Question
      */
     public function update(Question $question): Question;
+
+    /**
+     * Removes a question from the repository
+     *
+     * @param Question $question
+     */
+    public function remove(Question $question): void;
 }

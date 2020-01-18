@@ -5,6 +5,7 @@ namespace App\Domain\Questions;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Events\QuestionWasCreated;
+use App\Domain\Questions\Events\QuestionWasDeleted;
 use App\Domain\Questions\Events\QuestionWasEdited;
 use App\Domain\Questions\Events\TagsWereUpdated;
 use App\Domain\Questions\Question\QuestionId;

@@ -4,6 +4,7 @@ namespace App\Application\Answers;
 
 use App\Domain\Answers\Answer;
 use App\Domain\Answers\AnswersRepository;
+use App\Domain\Events\EventPublisher;
 
 class AddAnswerHandler
 {
@@ -11,15 +12,21 @@ class AddAnswerHandler
      * @var AnswersRepository
      */
     private $repository;
+    /**
+     * @var EventPublisher
+     */
+    private $eventPublisher;
 
     /**
      * Creates an AddAnswerHandler
      *
      * @param AnswersRepository $repository
+     * @param EventPublisher $eventPublisher
      */
-    public function __construct(AnswersRepository $repository)
+    public function __construct(AnswersRepository $repository, EventPublisher $eventPublisher)
     {
         $this->repository = $repository;
+        $this->eventPublisher = $eventPublisher;
     }
 
     /**
@@ -39,6 +46,7 @@ class AddAnswerHandler
             $command->description()
         );
 
-        return $this->repository->add($answer);
+        $this->eventPublisher->publishEventsFrom($this->repository->add($answer));
+        return $answer;
     }
 }

@@ -3,7 +3,9 @@
 namespace spec\App\Domain\Answers;
 
 use App\Domain\Answers\Answer;
-use App\Domain\Questions\Question;
+use App\Domain\Answers\Events\AnswerWasCreated;
+use App\Domain\Answers\Events\AnswerWasEdited;
+use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
 use App\Domain\Votes\Vote;
@@ -33,6 +35,12 @@ class AnswerSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(Answer::class);
+    }
+
+    function its_an_event_generator()
+    {
+        $this->shouldBeAnInstanceOf(EventGenerator::class);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasCreated::class);
     }
 
     function it_has_an_answer_id()
@@ -72,12 +80,14 @@ class AnswerSpec extends ObjectBehavior
 
     function it_can_be_edited()
     {
+        $this->releaseEvents();
         $description = 'New Description';
         $this->lastEditedOn()->shouldBe(null);
         $this->edit($description)->shouldBe($this->getWrappedObject());
 
         $this->description()->shouldBe($description);
         $this->lastEditedOn()->shouldBeAnInstanceOf(\DateTimeImmutable::class);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasEdited::class);
     }
 
     function it_can_be_voted()

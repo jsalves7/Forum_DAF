@@ -225,4 +225,19 @@ class Question implements EventGenerator
         }
         return null;
     }
+
+    public function removeAnswer(Answer $answer): Question
+    {
+        $copyAnswersList = $this->listOfAnswers;
+        $newAnswersList = [];
+        foreach ($copyAnswersList as $current) {
+            if ($current->answerId()->equalsTo($answer->answerId())) {
+                continue;
+            }
+            $newAnswersList[(string) $current->answerId()] = $current;
+        }
+
+        $this->listOfAnswers = $newAnswersList;
+        return $this;
+    }
 }

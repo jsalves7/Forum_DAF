@@ -134,5 +134,24 @@ class QuestionSpec extends ObjectBehavior
         $this->acceptedAnswer()->shouldBe($answer1);
     }
 
+    function it_can_remove_an_answer(Answer $answer1, Answer $answer2)
+    {
+        $answerId1 = new AnswerId();
+        $answer1->answerId()->willReturn($answerId1);
 
+        $answerId2 = new AnswerId();
+        $answer2->answerId()->willReturn($answerId2);
+
+        $this->addAnswer($answer1)->addAnswer($answer2);
+
+        $answers = $this->listOfAnswers();
+        $answers->shouldHaveCount(2);
+        $answers[(string) $answerId1]->shouldBe($answer1);
+
+        $this->removeAnswer($answer2)->shouldBe($this->getWrappedObject());
+
+        $answers = $this->listOfAnswers();
+        $answers->shouldHaveCount(1);
+        $answers[(string) $answerId1]->shouldBe($answer1);
+    }
 }

@@ -36,6 +36,11 @@ class DeleteQuestionHandlerSpec extends ObjectBehavior
         $this->shouldHaveType(DeleteQuestionHandler::class);
     }
 
+    /**
+     * @param QuestionsRepository|\PhpSpec\Wrapper\Collaborator $questions
+     * @param Question|\PhpSpec\Wrapper\Collaborator $question
+     * @param EventPublisher|\PhpSpec\Wrapper\Collaborator $eventPublisher
+     */
     function it_handles_delete_question_command(
         QuestionsRepository $questions,
         Question $question,
@@ -50,6 +55,10 @@ class DeleteQuestionHandlerSpec extends ObjectBehavior
         $eventPublisher->publishEventsFrom($question)->shouldHaveBeenCalled();
     }
 
+    /**
+     * @param QuestionOwner|\PhpSpec\Wrapper\Collaborator $questionOwner
+     * @param Question|\PhpSpec\Wrapper\Collaborator $question
+     */
     function it_throws_an_exception_when_user_is_not_the_owner(
         QuestionOwner $questionOwner,
         Question $question

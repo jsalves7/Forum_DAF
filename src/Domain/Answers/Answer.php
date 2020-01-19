@@ -5,10 +5,7 @@ namespace App\Domain\Answers;
 use App\Domain\Answers\Answer\AnswerId;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
-<<<<<<< HEAD
-=======
 use App\Domain\Answers\Events\AnswerWasVoted;
->>>>>>> devjoshua
 use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Question\QuestionId;

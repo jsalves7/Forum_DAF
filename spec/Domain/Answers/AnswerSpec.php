@@ -5,10 +5,7 @@ namespace spec\App\Domain\Answers;
 use App\Domain\Answers\Answer;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
-<<<<<<< HEAD
-=======
 use App\Domain\Answers\Events\AnswerWasVoted;
->>>>>>> devjoshua
 use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
@@ -82,6 +79,9 @@ class AnswerSpec extends ObjectBehavior
         $this->setAsAccepted()->shouldBe(true);
     }
 
+    /**
+     * @throws \Exception
+     */
     function it_can_be_edited()
     {
         $this->releaseEvents();
@@ -109,6 +109,9 @@ class AnswerSpec extends ObjectBehavior
         $this->negativeVotes()->shouldBe($this->negativeVotes);
     }
 
+    /**
+     * @throws \Exception
+     */
     function it_can_add_a_positive_vote()
     {
         $this->releaseEvents();
@@ -118,6 +121,9 @@ class AnswerSpec extends ObjectBehavior
         $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasVoted::class);
     }
 
+    /**
+     * @throws \Exception
+     */
     function it_can_add_a_negative_vote()
     {
         $this->releaseEvents();

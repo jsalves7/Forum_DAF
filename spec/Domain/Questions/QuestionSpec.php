@@ -2,6 +2,8 @@
 
 namespace spec\App\Domain\Questions;
 
+use App\Domain\Answers\Answer;
+use App\Domain\Answers\Answer\AnswerId;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Events\QuestionWasCreated;
 use App\Domain\Questions\Events\QuestionWasEdited;
@@ -96,5 +98,41 @@ class QuestionSpec extends ObjectBehavior
         $this->tags()->shouldBe($collection);
         $this->releaseEvents()[0]->shouldBeAnInstanceOf(TagsWereUpdated::class);
     }
+
+    function it_has_a_list_of_answers(Answer $answer)
+    {
+        $answerId = new AnswerId();
+        $answer->answerId()->willReturn($answerId);
+
+        $answers = $this->listOfAnswers();
+        $answers->shouldBeArray();
+        $answers->shouldHaveCount(0);
+
+        $this->addAnswer($answer)->shouldBe($this->getWrappedObject());
+
+        $answers = $this->listOfAnswers();
+        $answers->shouldBeArray();
+        $answers->shouldHaveCount(1);
+
+        $answers[(string) $answerId]->shouldBe($answer);
+    }
+
+    function it_can_have_an_accepted_answer(Answer $answer1, Answer $answer2)
+    {
+        $this->acceptedAnswer()->shouldBeNull();
+
+        $answerId1 = new AnswerId();
+        $answer1->answerId()->willReturn($answerId1);
+        $answer1->isAccepted()->willReturn(true);
+
+        $answerId2 = new AnswerId();
+        $answer2->answerId()->willReturn($answerId2);
+        $answer2->isAccepted()->willReturn(false);
+
+        $this->addAnswer($answer1)->addAnswer($answer2);
+
+        $this->acceptedAnswer()->shouldBe($answer1);
+    }
+
 
 }

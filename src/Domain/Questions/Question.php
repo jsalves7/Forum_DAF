@@ -2,6 +2,7 @@
 
 namespace App\Domain\Questions;
 
+use App\Domain\Answers\Answer;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Events\QuestionWasCreated;
@@ -14,6 +15,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Exception;
 
 /**
@@ -88,6 +90,13 @@ class Question implements EventGenerator
      *      )
      */
     private $tags;
+
+    /**
+     * @var Answer[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Domain\Answers\Answer", mappedBy="question")
+     */
+    private $listOfAnswers = [];
 
     /**
      * Creates a Question
@@ -190,5 +199,30 @@ class Question implements EventGenerator
         $this->tags = $tags;
         $this->recordThat(new TagsWereUpdated($this->questionId, $tags));
         return $this;
+    }
+
+    public function listOfAnswers(): array
+    {
+        if ($this->listOfAnswers instanceof PersistentCollection) {
+            $this->listOfAnswers = $this->listOfAnswers->toArray();
+        }
+
+        return $this->listOfAnswers;
+    }
+
+    public function addAnswer(Answer $answer): Question
+    {
+        $this->listOfAnswers[(string) $answer->answerId()] = $answer;
+        return $this;
+    }
+
+    public function acceptedAnswer(): ?Answer
+    {
+        foreach ($this->listOfAnswers as $answer) {
+            if ($answer->isAccepted()) {
+                return $answer;
+            }
+        }
+        return null;
     }
 }

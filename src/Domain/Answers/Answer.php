@@ -3,9 +3,11 @@
 namespace App\Domain\Answers;
 
 use App\Domain\Answers\Answer\AnswerId;
+use App\Domain\Answers\Events\AnswerWasAccepted;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
 use App\Domain\Answers\Events\AnswerWasVoted;
+use App\Domain\Comparable;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Question\QuestionId;
@@ -22,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(name="answers")
  */
-class Answer implements EventGenerator
+class Answer implements EventGenerator, Comparable
 {
 
     use EventGeneratorMethods;
@@ -152,9 +154,16 @@ class Answer implements EventGenerator
         return $this->accepted;
     }
 
-    public function setAsAccepted(): bool
+    /**
+     * @return Answer
+     *
+     * @throws \Exception
+     */
+    public function setAsAccepted(): Answer
     {
-        return $this->accepted = true;
+        $this->accepted = true;
+        $this->recordThat(new AnswerWasAccepted($this->answerId));
+        return $this;
     }
 
     /**
@@ -209,5 +218,20 @@ class Answer implements EventGenerator
         $this->recordThat(new AnswerWasVoted($this->answerId, $vote));
         return $this;
     }
+
+    /**
+     * Checks if there is other object equal to current one
+     *
+     * @inheritDoc
+     */
+    public function equalsTo($otherAnswer): bool
+    {
+        if(!$otherAnswer instanceof Answer) {
+            return false;
+        }
+
+        return $this->answerId->equalsTo($otherAnswer->answerId());
+    }
+
 
 }

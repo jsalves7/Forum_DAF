@@ -3,9 +3,11 @@
 namespace spec\App\Domain\Answers;
 
 use App\Domain\Answers\Answer;
+use App\Domain\Answers\Events\AnswerWasAccepted;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
 use App\Domain\Answers\Events\AnswerWasVoted;
+use App\Domain\Comparable;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
@@ -74,9 +76,16 @@ class AnswerSpec extends ObjectBehavior
         $this->isAccepted()->shouldBe(false);
     }
 
+    /**
+     * @throws \Exception
+     */
     function it_can_set_an_answer_as_the_accepted_one()
     {
-        $this->setAsAccepted()->shouldBe(true);
+        $this->releaseEvents();
+        $this->isAccepted()->shouldBe(false);
+        $this->setAsAccepted()->shouldBe($this->getWrappedObject());
+        $this->isAccepted()->shouldBe(true);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasAccepted::class);
     }
 
     /**
@@ -131,6 +140,13 @@ class AnswerSpec extends ObjectBehavior
         $this->positiveVotes()->shouldBe(0);
         $this->negativeVotes()->shouldBe(1);
         $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasVoted::class);
+    }
+
+    function it_can_be_compared_to_other_answer(Answer $otherAnswer)
+    {
+        $otherAnswer->answerId()->willReturn($this->answerId()->getWrappedObject());
+        $this->shouldBeAnInstanceOf(Comparable::class);
+        $this->equalsTo($otherAnswer)->shouldBe(true);
     }
 
 }

@@ -57,6 +57,13 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         $this->shouldHaveType(EditAnswerHandler::class);
     }
 
+    /**
+     * @param Answer|\PhpSpec\Wrapper\Collaborator $answer
+     * @param AnswersRepository|\PhpSpec\Wrapper\Collaborator $answers
+     * @param EventPublisher|\PhpSpec\Wrapper\Collaborator $eventPublisher
+     *
+     * @throws \Exception
+     */
     function it_handles_the_edit_answer_command(Answer $answer, AnswersRepository $answers, EventPublisher $eventPublisher)
     {
         $description = "A given description";
@@ -70,6 +77,10 @@ class EditAnswerHandlerSpec extends ObjectBehavior
         $eventPublisher->publishEventsFrom($answer)->shouldHaveBeenCalled();
     }
 
+    /**
+     * @param AnswerOwner|\PhpSpec\Wrapper\Collaborator $answerOwner
+     * @param Answer|\PhpSpec\Wrapper\Collaborator $answer
+     */
     function it_throws_an_exception_when_user_is_not_the_owner(AnswerOwner $answerOwner, Answer $answer)
     {
         $description = "A given description";
@@ -82,6 +93,10 @@ class EditAnswerHandlerSpec extends ObjectBehavior
             ->during('handle', [$command]);
     }
 
+    /**
+     * @param Answer|\PhpSpec\Wrapper\Collaborator $answer
+     * @param AcceptedAnswer|\PhpSpec\Wrapper\Collaborator $acceptedAnswer
+     */
     function it_throws_an_exception_when_answer_is_already_accepted(Answer $answer, AcceptedAnswer $acceptedAnswer)
     {
         $description = "A given description";

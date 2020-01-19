@@ -37,4 +37,11 @@ interface AnswersRepository
      * @return Answer
      */
     public function update(Answer $answer): Answer;
+
+    /**
+     * Removes an answer from the repository
+     *
+     * @param Answer $answer
+     */
+    public function remove(Answer $answer): void;
 }

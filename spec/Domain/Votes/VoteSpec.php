@@ -27,14 +27,18 @@ class VoteSpec extends ObjectBehavior
     function it_can_check_if_its_positive()
     {
         $this->isPositive()->shouldBe(true);
-        $this->shouldHaveType(Vote::class);
     }
 
     function it_can_check_if_its_negative()
     {
-        $this->beConstructedThrough("negative", []);
-        $this->shouldHaveType(Vote::class);
         $this->isNegative()->shouldBe(false);
+    }
+
+    function it_can_be_created_through_factory_methods()
+    {
+        $this->beConstructedThrough('negative', []);
+        $this->isNegative()->shouldBe(true);
+        $this->isPositive()->shouldBe(false);
     }
 
     function it_can_be_converted_to_json()

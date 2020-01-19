@@ -33,7 +33,7 @@ class Vote implements \JsonSerializable
 
     public function isNegative(): bool
     {
-        return $this->value;
+        return !$this->value;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace spec\App\Domain\Answers;
 use App\Domain\Answers\Answer;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
+use App\Domain\Answers\Events\AnswerWasVoted;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
@@ -105,12 +106,22 @@ class AnswerSpec extends ObjectBehavior
         $this->negativeVotes()->shouldBe($this->negativeVotes);
     }
 
-    function it_can_add_a_vote()
+    function it_can_add_a_positive_vote()
     {
-        $positive = $this->positiveVotes();
-        $negative = $this->negativeVotes();
-        $this->addVote(vote::positive())->shouldBe($positive->getWrappedObject()+1);
-        $this->addVote(vote::negative())->shouldBe($negative->getWrappedObject()+1);
+        $this->releaseEvents();
+        $this->addVote(Vote::positive())->shouldBe($this->getWrappedObject());
+        $this->positiveVotes()->shouldBe(1);
+        $this->negativeVotes()->shouldBe(0);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasVoted::class);
+    }
+
+    function it_can_add_a_negative_vote()
+    {
+        $this->releaseEvents();
+        $this->addVote(Vote::negative())->shouldBe($this->getWrappedObject());
+        $this->positiveVotes()->shouldBe(0);
+        $this->negativeVotes()->shouldBe(1);
+        $this->releaseEvents()[0]->shouldBeAnInstanceOf(AnswerWasVoted::class);
     }
 
 }

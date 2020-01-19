@@ -5,6 +5,7 @@ namespace App\Domain\Answers;
 use App\Domain\Answers\Answer\AnswerId;
 use App\Domain\Answers\Events\AnswerWasCreated;
 use App\Domain\Answers\Events\AnswerWasEdited;
+use App\Domain\Answers\Events\AnswerWasVoted;
 use App\Domain\Events\EventGenerator;
 use App\Domain\Events\EventGeneratorMethods;
 use App\Domain\Questions\Question\QuestionId;
@@ -190,17 +191,23 @@ class Answer implements EventGenerator
         return $this->negativeVotes;
     }
 
-    public function addVote(Vote $vote): int
+    /**
+     * @param Vote $vote
+     * @return Answer
+     *
+     * @throws \Exception
+     */
+    public function addVote(Vote $vote): Answer
     {
-        if ($vote->isPositive() == true) {
-            ++$this->positiveVotes;
-            return $this->positiveVotes;
+        if ($vote->isPositive()) {
+            $this->positiveVotes++;
+            $this->recordThat(new AnswerWasVoted($this->answerId, $vote));
+            return $this;
         }
 
-        if ($vote->isNegative() == false) {
-            ++$this->negativeVotes;
-            return $this->negativeVotes;
-        }
+        $this->negativeVotes++;
+        $this->recordThat(new AnswerWasVoted($this->answerId, $vote));
+        return $this;
     }
 
 }

@@ -3,6 +3,7 @@
 namespace spec\App\Domain\Questions;
 
 use App\Domain\Questions\Tag;
+use App\Domain\Stringable;
 use PhpSpec\ObjectBehavior;
 
 class TagSpec extends ObjectBehavior
@@ -29,5 +30,20 @@ class TagSpec extends ObjectBehavior
     function it_has_a_description()
     {
         $this->description()->shouldBe($this->description);
+    }
+
+    function it_can_be_treated_as_a_string()
+    {
+        $this->shouldBeAnInstanceOf(Stringable::class);
+        $this->__toString()->shouldBe($this->description);
+    }
+
+    function it_can_be_converted_to_json()
+    {
+        $this->shouldBeAnInstanceOf(\JsonSerializable::class);
+        $this->jsonSerialize()->shouldBe([
+            'tagId' => $this->tagId(),
+            'description' => $this->description
+        ]);
     }
 }

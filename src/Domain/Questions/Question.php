@@ -228,9 +228,9 @@ class Question implements EventGenerator
 
     public function removeAnswer(Answer $answer): Question
     {
-        $copyAnswersList = $this->listOfAnswers;
+        $answersList = $this->listOfAnswers;
         $newAnswersList = [];
-        foreach ($copyAnswersList as $current) {
+        foreach ($answersList as $current) {
             if ($current->answerId()->equalsTo($answer->answerId())) {
                 continue;
             }

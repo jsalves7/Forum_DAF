@@ -19,7 +19,6 @@ class AnswerId implements Stringable, Comparable, \JsonSerializable
             : Uuid::uuid4();
     }
 
-
     /**
      * Returns the object in text
      *

@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CreateQuestion extends AbstractController implements AuthenticatedControllerInterface
+class CreateQuestionController extends AbstractController implements AuthenticatedControllerInterface
 {
     use ApiControllerMethods;
 
@@ -36,7 +36,7 @@ class CreateQuestion extends AbstractController implements AuthenticatedControll
     private $user;
 
     /**
-     * Creates a CreateQuestion
+     * Creates a CreateQuestionController
      *
      * @param CommandBus $commandBus
      */
@@ -46,6 +46,9 @@ class CreateQuestion extends AbstractController implements AuthenticatedControll
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     *
      * @Route("/questions", methods={"POST"})
      */
     public function handle(Request $request)
@@ -64,10 +67,7 @@ class CreateQuestion extends AbstractController implements AuthenticatedControll
         try {
             $question = $this->commandBus->handle($command);
         } catch (\Throwable $throwable) {
-            return $this->badRequest(
-                $throwable->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->badRequest($throwable->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->response($question);

@@ -3,6 +3,7 @@
 namespace App\Domain\Questions;
 
 use App\Domain\Questions\Tag\TagId;
+use App\Domain\Stringable;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
@@ -14,7 +15,7 @@ use Exception;
  * @ORM\Entity()
  * @ORM\Table(name="tags")
  */
-class Tag
+class Tag implements Stringable, \JsonSerializable
 {
 
     /**
@@ -63,5 +64,28 @@ class Tag
     public function description(): string
     {
         return $this->description;
+    }
+
+    /**
+     * Returns a text version of the object
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Specifies data to be serialized to json
+     *
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'tagId' => $this->tagId,
+            'description' => $this->description
+        ];
     }
 }

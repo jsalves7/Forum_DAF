@@ -73,3 +73,30 @@ class GetSpecificAnswerController extends AbstractController implements Authenti
         return $this;
     }
 }
+
+/**
+ * @OA\Get(
+ *     path="/answers/{answerId}",
+ *     tags={"Answers"},
+ *     summary="Retrieve the answer with provided ID",
+ *     description="Returns an answer",
+ *     operationId="getAnswer",
+ *     @OA\Parameter(
+ *         name="answerId",
+ *         in="path",
+ *         description="id of answer to return",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="The requested answer",
+ *         @OA\JsonContent(ref="#/components/schemas/Answer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

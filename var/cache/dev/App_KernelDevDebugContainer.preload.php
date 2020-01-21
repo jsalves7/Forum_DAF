@@ -6,12 +6,12 @@
 use Symfony\Component\DependencyInjection\Dumper\Preloader;
 
 require dirname(__DIR__, 3).'/vendor/autoload.php';
-require __DIR__.'/ContainerFsJPf0m/App_KernelDevDebugContainer.php';
+require __DIR__.'/ContainerMnwnjdO/App_KernelDevDebugContainer.php';
 
 $classes = [];
+$classes[] = 'App\Infrastructure\HttpKernel\EventListener\ApiUserIdentifier';
 $classes[] = 'App\Infrastructure\HttpKernel\EventListener\ControllerListener';
 $classes[] = 'League\OAuth2\Server\ResourceServer';
-$classes[] = 'App\Infrastructure\HttpKernel\EventListener\ApiUserIdentifier';
 $classes[] = 'App\Infrastructure\Persistence\Doctrine\UserManagement\DoctrineUsersRepository';
 $classes[] = 'App\Infrastructure\Persistence\Doctrine\UserManagement\OAuth2\DoctrineAccessTokensRepository';
 $classes[] = 'Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory';

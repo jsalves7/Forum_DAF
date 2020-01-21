@@ -6,6 +6,7 @@ use App\Application\Questions\DeleteQuestionCommand;
 use App\Application\Questions\DeleteQuestionHandler;
 use App\Domain\Events\EventPublisher;
 use App\Domain\Exceptions\InvalidQuestionOwner;
+use App\Domain\Questions\Events\QuestionWasDeleted;
 use App\Domain\Questions\Question;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\Questions\QuestionsRepository;
@@ -40,11 +41,11 @@ class DeleteQuestionHandlerSpec extends ObjectBehavior
      * @param QuestionsRepository|\PhpSpec\Wrapper\Collaborator $questions
      * @param Question|\PhpSpec\Wrapper\Collaborator $question
      * @param EventPublisher|\PhpSpec\Wrapper\Collaborator $eventPublisher
+     * @throws \Exception
      */
     function it_handles_delete_question_command(
         QuestionsRepository $questions,
-        Question $question,
-        EventPublisher $eventPublisher
+        Question $question
     ) {
         $command = new DeleteQuestionCommand(
             $this->questionId
@@ -52,7 +53,6 @@ class DeleteQuestionHandlerSpec extends ObjectBehavior
 
         $this->handle($command)->shouldBe($question);
         $questions->remove($question)->shouldHaveBeenCalled();
-        $eventPublisher->publishEventsFrom($question)->shouldHaveBeenCalled();
     }
 
     /**

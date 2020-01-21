@@ -90,3 +90,21 @@ class CreateQuestionController extends AbstractController implements Authenticat
         return $this;
     }
 }
+
+/**
+ * @OA\Post(
+ *     path="/questions",
+ *     operationId="addQuestion",
+ *     summary="Adds a new question",
+ *     tags={"Questions"},
+ *     requestBody={"$ref": "#/components/requestBodies/AddQuestion"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="The newlly crated question",
+ *         @OA\JsonContent(ref="#/components/schemas/Question")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

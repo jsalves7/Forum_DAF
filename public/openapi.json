@@ -9,6 +9,366 @@
         "version": "v0.1.0"
     },
     "paths": {
+        "/questions/{questionId}/answers": {
+            "post": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Adds a new answer",
+                "operationId": "addAnswer",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AddAnswer"
+                },
+                "responses": {
+                    "200": {
+                        "description": "The newlly crated answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Answer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/answers/{answerId}": {
+            "get": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Retrieve the answer with provided ID",
+                "description": "Returns an answer",
+                "operationId": "getAnswer",
+                "parameters": [
+                    {
+                        "name": "answerId",
+                        "in": "path",
+                        "description": "id of answer to return",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Answer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Deletes an answer",
+                "description": "Delete the answer that matches the provided answer ID",
+                "operationId": "DeleteAnswer",
+                "parameters": [
+                    {
+                        "name": "answerId",
+                        "in": "path",
+                        "description": "id of answer to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The answer was deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Update an answer",
+                "operationId": "UpdateAnswer",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UpdateAnswer"
+                },
+                "responses": {
+                    "200": {
+                        "description": "The updated answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateAnswer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/answers/{answerId}/set-as-accepted": {
+            "patch": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Mark an answer as the accepted one",
+                "description": "Marks the answer as the accepted one for its question",
+                "operationId": "AcceptAnswer",
+                "parameters": [
+                    {
+                        "name": "answerId",
+                        "in": "path",
+                        "description": "id of answer to mark as correct",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The updated answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Answer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/answers/{answerId}/vote-positive": {
+            "put": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Vote positive an answer",
+                "description": "Adds a positive vote to the answer that matches the provided answer id",
+                "operationId": "votePositiveAnswer",
+                "parameters": [
+                    {
+                        "name": "answerId",
+                        "in": "path",
+                        "description": "id of answer to vote",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The updated answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Answer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/answers/{answerId}/vote-negative": {
+            "put": {
+                "tags": [
+                    "Answers"
+                ],
+                "summary": "Vote negative an answer",
+                "description": "Adds a negative vote to the answer that matches the provided answer id",
+                "operationId": "voteNegativeAnswer",
+                "parameters": [
+                    {
+                        "name": "answerId",
+                        "in": "path",
+                        "description": "id of answer to vote",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The updated answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Answer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/questions": {
+            "post": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Adds a new question",
+                "operationId": "addQuestion",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AddQuestion"
+                },
+                "responses": {
+                    "200": {
+                        "description": "The newlly crated question",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Question"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
+        "/questions/{questionId}": {
+            "get": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Retrieve the question with provided ID",
+                "description": "Returns a question",
+                "operationId": "getQuestion",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "description": "id of question to return",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested question",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Question"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Delete a question",
+                "description": "Delete the question that matches the provided answer ID",
+                "operationId": "DeleteQuestion",
+                "parameters": [
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "description": "id of question to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Question was deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Questions"
+                ],
+                "summary": "Update a question",
+                "operationId": "UpdateQuestion",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/UpdateQuestion"
+                },
+                "responses": {
+                    "200": {
+                        "description": "The updated question",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateQuestion"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2.0-Token": []
+                    }
+                ]
+            }
+        },
         "/users/me": {
             "get": {
                 "tags": [
@@ -40,6 +400,107 @@
     },
     "components": {
         "schemas": {
+            "AddAnswer": {
+                "title": "AddAnswer",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "example": "Tonight's dinner is lasagna!"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateAnswer": {
+                "title": "UpdateAnswer",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "example": "Tonight's dinner is soup!"
+                    }
+                },
+                "type": "object"
+            },
+            "AddQuestion": {
+                "title": "AddQuestion",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "example": "What's for dinner tonigth?"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "I am starving!!"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateQuestion": {
+                "title": "UpdateQuestion",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "example": "A simple question"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "How can we do something?"
+                    }
+                },
+                "type": "object"
+            },
+            "Answer": {
+                "properties": {
+                    "answerId": {
+                        "description": "Answer identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "questionId": {
+                        "description": "Question identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "userId": {
+                        "description": "User identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "description": {
+                        "description": "Answer body",
+                        "type": "string",
+                        "example": "Yeah, off course I can help you, it is three o’clock."
+                    },
+                    "givenOn": {
+                        "description": "Date and time answer was given",
+                        "$ref": "#/components/schemas/DateTime"
+                    },
+                    "accepted": {
+                        "description": "Flag the accepted/unaccepted answer state",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "voted": {
+                        "description": "Flag the voted/non voted answer",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "lastEditedOn": {
+                        "description": "Date and time answer was last edited",
+                        "$ref": "#/components/schemas/DateTime"
+                    },
+                    "positiveVotes": {
+                        "description": "Positive votes",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "negativeVotes": {
+                        "description": "Negative votes",
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
             "DateTime": {
                 "properties": {
                     "date": {
@@ -57,6 +518,73 @@
                         "description": "Timezone name",
                         "type": "string",
                         "example": "Atlantic/Azores"
+                    }
+                },
+                "type": "object"
+            },
+            "Question": {
+                "properties": {
+                    "questionId": {
+                        "description": "Question identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "userId": {
+                        "description": "User identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "question": {
+                        "description": "Question made",
+                        "type": "string",
+                        "example": "What time is it?"
+                    },
+                    "description": {
+                        "description": "Optional description",
+                        "type": "string",
+                        "example": "It gets hard to know what time is it when I am working. Can you help?"
+                    },
+                    "appliedOn": {
+                        "description": "Date and time question was applied",
+                        "$ref": "#/components/schemas/DateTime"
+                    },
+                    "open": {
+                        "description": "Flag the open/close question state",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "lastEditedOn": {
+                        "description": "Date and time question was last edited",
+                        "$ref": "#/components/schemas/DateTime"
+                    },
+                    "tags": {
+                        "description": "Question tags",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "listOfAnswers": {
+                        "title": "Answers",
+                        "description": "Question answers",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Answer"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Tag": {
+                "properties": {
+                    "tagId": {
+                        "description": "Tag identifier",
+                        "type": "string",
+                        "example": "e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+                    },
+                    "description": {
+                        "description": "Tag description",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -84,6 +612,52 @@
                 "type": "object"
             }
         },
+        "requestBodies": {
+            "AddAnswer": {
+                "description": "Object containing the very minimal information needded to create an answer",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/AddAnswer"
+                        }
+                    }
+                }
+            },
+            "UpdateAnswer": {
+                "description": "The updated answer",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UpdateAnswer"
+                        }
+                    }
+                }
+            },
+            "AddQuestion": {
+                "description": "Object containing the very minimal information needded to create a question",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/AddQuestion"
+                        }
+                    }
+                }
+            },
+            "UpdateQuestion": {
+                "description": "The updated question",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UpdateAnswer"
+                        }
+                    }
+                }
+            }
+        },
         "securitySchemes": {
             "OAuth2.0-Token": {
                 "type": "oauth2",
@@ -100,6 +674,14 @@
         {
             "name": "Users",
             "description": "User related endpoints"
+        },
+        {
+            "name": "Questions",
+            "description": "Questions related endpoints"
+        },
+        {
+            "name": "Answers",
+            "description": "Answers related endpoints"
         }
     ]
 }

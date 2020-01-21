@@ -75,3 +75,30 @@ class GetSpecificQuestionController extends AbstractController implements Authen
         return $this;
     }
 }
+
+/**
+ * @OA\Get(
+ *     path="/questions/{questionId}",
+ *     tags={"Questions"},
+ *     summary="Retrieve the question with provided ID",
+ *     description="Returns a question",
+ *     operationId="getQuestion",
+ *     @OA\Parameter(
+ *         name="questionId",
+ *         in="path",
+ *         description="id of question to return",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="The requested question",
+ *         @OA\JsonContent(ref="#/components/schemas/Question")
+ *     ),
+ *    security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

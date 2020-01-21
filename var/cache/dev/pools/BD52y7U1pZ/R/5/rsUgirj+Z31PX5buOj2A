@@ -1,12 +1,10 @@
 <?php //%255BApp%255CDomain%255CUserManagement%255COAuth2%255CAccessToken%2524scopes%255D%255B1%255D
 
-namespace Symfony\Component\VarExporter\Internal;
-
-return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
     $o = [
-        clone (($p = &Registry::$prototypes)['Doctrine\\ORM\\Mapping\\ManyToMany'] ?? Registry::p('Doctrine\\ORM\\Mapping\\ManyToMany')),
-        clone ($p['Doctrine\\ORM\\Mapping\\JoinTable'] ?? Registry::p('Doctrine\\ORM\\Mapping\\JoinTable')),
-        clone ($p['Doctrine\\ORM\\Mapping\\JoinColumn'] ?? Registry::p('Doctrine\\ORM\\Mapping\\JoinColumn')),
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Mapping\\ManyToMany'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\ManyToMany')),
+        clone ($p['Doctrine\\ORM\\Mapping\\JoinTable'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\JoinTable')),
+        clone ($p['Doctrine\\ORM\\Mapping\\JoinColumn'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\JoinColumn')),
         clone $p['Doctrine\\ORM\\Mapping\\JoinColumn'],
     ],
     null,
@@ -37,4 +35,4 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
         $o[1],
     ],
     []
-);
+); }];

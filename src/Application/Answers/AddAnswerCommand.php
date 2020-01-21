@@ -5,6 +5,15 @@ namespace App\Application\Answers;
 use App\Domain\Questions\Question\QuestionId;
 use App\Domain\UserManagement\User\UserId;
 
+/**
+ * Class AddAnswerCommand
+ * @package App\Application\Answers
+ *
+ * @OA\Schema(
+ *     title="AddAnswer",
+ *     schema="AddAnswer"
+ * )
+ */
 class AddAnswerCommand
 {
     /**
@@ -19,6 +28,8 @@ class AddAnswerCommand
 
     /**
      * @var string
+     *
+     * @OA\Property(example="Tonight's dinner is lasagna!")
      */
     private $description;
 
@@ -52,3 +63,12 @@ class AddAnswerCommand
     }
 
 }
+
+/**
+ * @OA\RequestBody(
+ *     request="AddAnswer",
+ *     description="Object containing the very minimal information needded to create an answer",
+ *     required=true,
+ *     @OA\JsonContent(ref="#/components/schemas/AddAnswer")
+ * )
+ */

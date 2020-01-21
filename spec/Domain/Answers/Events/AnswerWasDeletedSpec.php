@@ -2,6 +2,7 @@
 
 namespace spec\App\Domain\Answers\Events;
 
+use App\Domain\Answers\Answer;
 use App\Domain\Answers\Answer\AnswerId;
 use App\Domain\Answers\Events\AnswerWasDeleted;
 use App\Domain\Events\AbstractDomainEvent;
@@ -12,12 +13,9 @@ use PhpSpec\ObjectBehavior;
 class AnswerWasDeletedSpec extends ObjectBehavior
 {
 
-    private $answerId;
-
-    function let()
+    function let(Answer $answer)
     {
-        $this->answerId = new AnswerId();
-        $this->beConstructedWith($this->answerId);
+        $this->beConstructedWith($answer);
     }
 
     function it_is_initializable()
@@ -32,8 +30,8 @@ class AnswerWasDeletedSpec extends ObjectBehavior
         $this->occurredOn()->shouldBeAnInstanceOf(DateTimeImmutable::class);
     }
 
-    function it_has_an_answer_id()
+    function it_has_an_answer(Answer $answer)
     {
-        $this->answerId()->shouldBe($this->answerId);
+        $this->answer()->shouldBe($answer);
     }
 }

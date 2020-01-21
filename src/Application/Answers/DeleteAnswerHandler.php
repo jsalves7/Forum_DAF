@@ -3,6 +3,7 @@
 namespace App\Application\Answers;
 
 use App\Domain\Answers\AnswersRepository;
+use App\Domain\Answers\Events\AnswerWasDeleted;
 use App\Domain\Answers\Specification\AcceptedAnswer;
 use App\Domain\Answers\Specification\AnswerOwner;
 use App\Domain\Events\EventPublisher;
@@ -47,6 +48,11 @@ class DeleteAnswerHandler
         $this->eventPublisher = $eventPublisher;
     }
 
+    /**
+     * @param DeleteAnswerCommand $command
+     * @return \App\Domain\Answers\Answer
+     * @throws \Exception
+     */
     public function handle(DeleteAnswerCommand $command)
     {
         $answer = $this->answers->withId($command->answerId());
@@ -63,6 +69,8 @@ class DeleteAnswerHandler
             );
         }
 
-        $this->eventPublisher->publishEventsFrom($this->answers->remove($answer));
+        $this->answers->remove($answer);
+        $this->eventPublisher->publish(new AnswerWasDeleted($answer));
+        return $answer;
     }
 }

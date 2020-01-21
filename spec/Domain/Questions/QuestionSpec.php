@@ -154,4 +154,21 @@ class QuestionSpec extends ObjectBehavior
         $answers->shouldHaveCount(1);
         $answers[(string) $answerId1]->shouldBe($answer1);
     }
+
+    public function it_can_be_converted_to_json()
+    {
+        $this->shouldBeAnInstanceOf(\JsonSerializable::class);
+        $this->jsonSerialize()->shouldBe([
+            'questionId' => $this->questionId(),
+            'userId' => $this->userId(),
+            'question' => $this->question,
+            'description' => $this->description,
+            'appliedOn' => $this->appliedOn(),
+            'open' => $this->isOpen(),
+            'lastEditedOn' => $this->lastEditedOn(),
+            'tags' => $this->tags(),
+            'listOfAnswers' => $this->listOfAnswers(),
+            'acceptedAnswer' => $this->acceptedAnswer()
+        ]);
+    }
 }

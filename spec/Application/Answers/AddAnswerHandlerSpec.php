@@ -8,6 +8,7 @@ use App\Domain\Answers\Answer;
 use App\Domain\Answers\AnswersRepository;
 use App\Domain\Events\EventPublisher;
 use App\Domain\Questions\Question\QuestionId;
+use App\Domain\Questions\QuestionsRepository;
 use App\Domain\UserManagement\User\UserId;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -19,7 +20,7 @@ class AddAnswerHandlerSpec extends ObjectBehavior
     private $userId;
     private $description;
 
-    function let(AnswersRepository $repository, EventPublisher $eventPublisher)
+    function let(AnswersRepository $repository,  EventPublisher $eventPublisher)
     {
         $this->questionId = new QuestionId();
         $this->userId = new UserId();

@@ -89,3 +89,21 @@ class UpdateAnswerController extends AbstractController implements Authenticated
         return $this;
     }
 }
+
+/**
+ * @OA\Patch(
+ *     path="/answers/{answerId}",
+ *     operationId="UpdateAnswer",
+ *     summary="Update an answer",
+ *     tags={"Answers"},
+ *     requestBody={"$ref": "#/components/requestBodies/UpdateAnswer"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="The updated answer",
+ *         @OA\JsonContent(ref="#/components/schemas/UpdateAnswer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

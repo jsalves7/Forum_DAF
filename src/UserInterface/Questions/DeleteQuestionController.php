@@ -82,3 +82,30 @@ class DeleteQuestionController extends AbstractController implements Authenticat
         return $this;
     }
 }
+
+/**
+ * @OA\Delete(
+ *     path="/questions/{questionId}",
+ *     tags={"Questions"},
+ *     summary="Delete a question",
+ *     description="Delete the question that matches the provided answer ID",
+ *     operationId="DeleteQuestion",
+ *     @OA\Parameter(
+ *         name="questionId",
+ *         in="path",
+ *         description="id of question to delete",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=204,
+ *         description="Question was deleted"
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ *
+ */

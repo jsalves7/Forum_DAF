@@ -41,15 +41,14 @@ class AcceptAnswerHandler
         $this->eventPublisher = $eventPublisher;
     }
 
+    /**
+     * @param AcceptAnswerCommand $command
+     * @return Answer
+     * @throws \Exception
+     */
     public function handle(AcceptAnswerCommand $command): Answer
     {
         $answer = $this->answers->withId($command->answerId());
-
-        if (!$this->questionOwner->isSatisfiedBy()) {
-            throw new InvalidQuestionOwner(
-                "Only the question's owner can accept this answer."
-            );
-        }
 
         $this->eventPublisher->publishEventsFrom(
             $this->answers->update(

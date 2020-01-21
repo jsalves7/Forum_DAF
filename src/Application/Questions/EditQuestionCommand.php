@@ -4,15 +4,28 @@ namespace App\Application\Questions;
 
 use App\Domain\Questions\Question\QuestionId;
 
+/**
+ * Class EditQuestionCommand
+ * @package App\Application\Questions
+ *
+ * @OA\Schema(
+ *     title="UpdateQuestion",
+ *     schema="UpdateQuestion"
+ * )
+ */
 class EditQuestionCommand
 {
     /**
      * @var string
+     *
+     * @OA\Property(example="A simple question")
      */
     private $question;
 
     /**
      * @var string
+     *
+     * @OA\Property(example="How can we do something?")
      */
     private $description;
 
@@ -60,3 +73,12 @@ class EditQuestionCommand
         return $this->questionId;
     }
 }
+
+/**
+ * @OA\RequestBody(
+ *     request="UpdateQuestion",
+ *     description="The updated question",
+ *     required=true,
+ *     @OA\JsonContent(ref="#/components/schemas/UpdateAnswer")
+ * )
+ */

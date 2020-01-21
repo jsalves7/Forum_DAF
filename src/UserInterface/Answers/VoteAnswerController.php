@@ -104,3 +104,57 @@ class VoteAnswerController extends AbstractController implements AuthenticatedCo
         return $this;
     }
 }
+
+/**
+ * @OA\Put(
+ *     path="/answers/{answerId}/vote-positive",
+ *     tags={"Answers"},
+ *     summary="Vote positive an answer",
+ *     description="Adds a positive vote to the answer that matches the provided answer id",
+ *     operationId="votePositiveAnswer",
+ *     @OA\Parameter(
+ *         name="answerId",
+ *         in="path",
+ *         description="id of answer to vote",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="The updated answer",
+ *         @OA\JsonContent(ref="#/components/schemas/Answer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */
+
+/**
+ * @OA\Put(
+ *     path="/answers/{answerId}/vote-negative",
+ *     tags={"Answers"},
+ *     summary="Vote negative an answer",
+ *     description="Adds a negative vote to the answer that matches the provided answer id",
+ *     operationId="voteNegativeAnswer",
+ *     @OA\Parameter(
+ *         name="answerId",
+ *         in="path",
+ *         description="id of answer to vote",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="The updated answer",
+ *         @OA\JsonContent(ref="#/components/schemas/Answer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

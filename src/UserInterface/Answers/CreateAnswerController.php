@@ -45,7 +45,7 @@ class CreateAnswerController extends AbstractController implements Authenticated
      * @param $questionId
      * @return Response
      *
-     * @Route("/answers", methods={"POST"})
+     * @Route("questions/{questionId}/answers", methods={"POST"})
      */
     public function handle(Request $request, $questionId)
     {
@@ -89,3 +89,21 @@ class CreateAnswerController extends AbstractController implements Authenticated
         return $this;
     }
 }
+
+/**
+ * @OA\Post(
+ *     path="/questions/{questionId}/answers",
+ *     operationId="addAnswer",
+ *     summary="Adds a new answer",
+ *     tags={"Answers"},
+ *     requestBody={"$ref": "#/components/requestBodies/AddAnswer"},
+ *     @OA\Response(
+ *         response=200,
+ *         description="The newlly crated answer",
+ *         @OA\JsonContent(ref="#/components/schemas/Answer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */

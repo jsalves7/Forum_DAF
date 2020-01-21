@@ -2,33 +2,33 @@
 
 namespace App\Domain\Answers\Events;
 
-use App\Domain\Answers\Answer\AnswerId;
+use App\Domain\Answers\Answer;
 use App\Domain\Events\AbstractDomainEvent;
 use App\Domain\Events\DomainEvent;
 
 class AnswerWasDeleted extends AbstractDomainEvent implements DomainEvent
 {
     /**
-     * @var AnswerId
+     * @var Answer
      */
-    private $answerId;
+    private $answer;
 
     /**
-     * DeleteAnswerCommand constructor.
+     * AnswerWasCreated constructor.
      *
-     * @param AnswerId $answerId
-     *
+     * @param Answer $answer
      * @throws \Exception
      */
-    public function __construct(AnswerId $answerId)
+    public function __construct(Answer $answer)
     {
         parent::__construct();
-        $this->answerId = $answerId;
+        $this->answer = $answer;
     }
 
-    public function answerId(): AnswerId
+    public function answer(): Answer
     {
-        return $this->answerId;
+        return $this->answer;
     }
+
 
 }

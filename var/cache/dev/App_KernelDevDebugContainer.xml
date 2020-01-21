@@ -85,6 +85,15 @@
       <parameter key="Password" type="collection">
         <parameter key="class">App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrinePassword</parameter>
       </parameter>
+      <parameter key="QuestionId" type="collection">
+        <parameter key="class">App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionId</parameter>
+      </parameter>
+      <parameter key="TagId" type="collection">
+        <parameter key="class">App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagId</parameter>
+      </parameter>
+      <parameter key="AnswerId" type="collection">
+        <parameter key="class">App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswerId</parameter>
+      </parameter>
     </parameter>
     <parameter key="doctrine.connections" type="collection">
       <parameter key="default">doctrine.dbal.default_connection</parameter>
@@ -161,13 +170,46 @@
     </service>
     <service id="nyholm.psr7.psr17_factory" class="Nyholm\Psr7\Factory\Psr17Factory"/>
     <service id="nyholm.psr7.httplug_factory" class="Nyholm\Psr7\Factory\HttplugFactory"/>
+    <service id="App\Application\Answers\AcceptAnswerCommand" class="App\Application\Answers\AcceptAnswerCommand" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Answers\Answer\AnswerId"/>
+    </service>
+    <service id="App\Application\Answers\AcceptAnswerHandler" class="App\Application\Answers\AcceptAnswerHandler" public="true" autowire="true" autoconfigure="true">
+      <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <argument type="service" id="App\Domain\Questions\Specification\QuestionOwner"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+    </service>
     <service id="App\Application\Answers\AddAnswerCommand" class="App\Application\Answers\AddAnswerCommand" autowire="true" autoconfigure="true"/>
     <service id="App\Application\Answers\AddAnswerHandler" class="App\Application\Answers\AddAnswerHandler" public="true" autowire="true" autoconfigure="true">
       <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+    </service>
+    <service id="App\Application\Answers\DeleteAnswerCommand" class="App\Application\Answers\DeleteAnswerCommand" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Answers\Answer\AnswerId"/>
+    </service>
+    <service id="App\Application\Answers\DeleteAnswerHandler" class="App\Application\Answers\DeleteAnswerHandler" public="true" autowire="true" autoconfigure="true">
+      <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <argument type="service" id="App\Domain\Answers\Specification\AnswerOwner"/>
+      <argument type="service" id="App\Domain\Answers\Specification\AcceptedAnswer"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
     </service>
     <service id="App\Application\Answers\EditAnswerCommand" class="App\Application\Answers\EditAnswerCommand" autowire="true" autoconfigure="true"/>
     <service id="App\Application\Answers\EditAnswerHandler" class="App\Application\Answers\EditAnswerHandler" public="true" autowire="true" autoconfigure="true">
       <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <argument type="service" id="App\Domain\Answers\Specification\AnswerOwner"/>
+      <argument type="service" id="App\Domain\Answers\Specification\AcceptedAnswer"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+    </service>
+    <service id="App\Application\Answers\VoteAnswerCommand" class="App\Application\Answers\VoteAnswerCommand" autowire="true" autoconfigure="true"/>
+    <service id="App\Application\Answers\VoteAnswerHandler" class="App\Application\Answers\VoteAnswerHandler" public="true" autowire="true" autoconfigure="true">
+      <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
+      <argument type="service" id="App\Domain\Votes\Specification\UserVote"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
     </service>
     <service id="App\Application\Pagination" class="App\Application\Pagination" autowire="true" autoconfigure="true"/>
     <service id="App\Application\QueryResult" class="App\Application\QueryResult" autowire="true" autoconfigure="true"/>
@@ -177,12 +219,31 @@
       <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
       <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
     </service>
+    <service id="App\Application\Questions\DeleteQuestionCommand" class="App\Application\Questions\DeleteQuestionCommand" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Questions\Question\QuestionId"/>
+    </service>
+    <service id="App\Application\Questions\DeleteQuestionHandler" class="App\Application\Questions\DeleteQuestionHandler" public="true" autowire="true" autoconfigure="true">
+      <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
+      <argument type="service" id="App\Domain\Questions\Specification\QuestionOwner"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+    </service>
     <service id="App\Application\Questions\EditQuestionCommand" class="App\Application\Questions\EditQuestionCommand" autowire="true" autoconfigure="true"/>
     <service id="App\Application\Questions\EditQuestionHandler" class="App\Application\Questions\EditQuestionHandler" public="true" autowire="true" autoconfigure="true">
       <tag name="command_handler"/>
       <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
       <argument type="service" id="App\Domain\Questions\Specification\OpenQuestion"/>
       <argument type="service" id="App\Domain\Questions\Specification\QuestionOwner"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+    </service>
+    <service id="App\Application\Questions\UpdateTagsCommand" class="App\Application\Questions\UpdateTagsCommand" autowire="true" autoconfigure="true"/>
+    <service id="App\Application\Questions\UpdateTagsHandler" class="App\Application\Questions\UpdateTagsHandler" public="true" autowire="true" autoconfigure="true">
+      <tag name="command_handler"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagsRepository"/>
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+      <argument type="service" id="App\Domain\Questions\Specification\QuestionOwner"/>
+      <argument type="service" id="App\Domain\Questions\Specification\OpenQuestion"/>
     </service>
     <service id="App\Application\UserManagement\CreateUserCommand" class="App\Application\UserManagement\CreateUserCommand" autowire="true" autoconfigure="true"/>
     <service id="App\Application\UserManagement\CreateUserHandler" class="App\Application\UserManagement\CreateUserHandler" public="true" autowire="true" autoconfigure="true">
@@ -203,6 +264,17 @@
     </service>
     <service id="App\Domain\Answers\Answer" class="App\Domain\Answers\Answer" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Answers\Answer\AnswerId" class="App\Domain\Answers\Answer\AnswerId" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Answers\Events\AnswerWasAccepted" class="App\Domain\Answers\Events\AnswerWasAccepted" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Answers\Answer\AnswerId"/>
+    </service>
+    <service id="App\Domain\Answers\Events\AnswerWasCreated" class="App\Domain\Answers\Events\AnswerWasCreated" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Answers\Answer"/>
+    </service>
+    <service id="App\Domain\Answers\Events\AnswerWasDeleted" class="App\Domain\Answers\Events\AnswerWasDeleted" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Answers\Answer"/>
+    </service>
+    <service id="App\Domain\Answers\Events\AnswerWasEdited" class="App\Domain\Answers\Events\AnswerWasEdited" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Answers\Events\AnswerWasVoted" class="App\Domain\Answers\Events\AnswerWasVoted" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Answers\Specification\AcceptedAnswer" class="App\Domain\Answers\Specification\AcceptedAnswer" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Answers\Specification\AnswerOwner" class="App\Domain\Answers\Specification\AnswerOwner" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Infrastructure\HttpKernel\EventListener\ApiUserIdentifier"/>
@@ -212,18 +284,26 @@
     <service id="App\Domain\Exceptions\InvalidAnswerState" class="App\Domain\Exceptions\InvalidAnswerState" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Exceptions\InvalidQuestionOwner" class="App\Domain\Exceptions\InvalidQuestionOwner" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Exceptions\InvalidQuestionState" class="App\Domain\Exceptions\InvalidQuestionState" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Exceptions\InvalidUserVote" class="App\Domain\Exceptions\InvalidUserVote" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Exceptions\QuestionNotFound" class="App\Domain\Exceptions\QuestionNotFound" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Exceptions\SpecificationFailure" class="App\Domain\Exceptions\SpecificationFailure" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Questions\Events\QuestionWasCreated" class="App\Domain\Questions\Events\QuestionWasCreated" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Domain\Questions\Question"/>
     </service>
+    <service id="App\Domain\Questions\Events\QuestionWasDeleted" class="App\Domain\Questions\Events\QuestionWasDeleted" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Domain\Questions\Question"/>
+    </service>
+    <service id="App\Domain\Questions\Events\QuestionWasEdited" class="App\Domain\Questions\Events\QuestionWasEdited" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Questions\Events\TagsWereRemoved" class="App\Domain\Questions\Events\TagsWereRemoved" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Questions\Events\TagsWereUpdated" class="App\Domain\Questions\Events\TagsWereUpdated" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Questions\Question" class="App\Domain\Questions\Question" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Questions\Question\QuestionId" class="App\Domain\Questions\Question\QuestionId" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Questions\Specification\OpenQuestion" class="App\Domain\Questions\Specification\OpenQuestion" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\Questions\Specification\QuestionOwner" class="App\Domain\Questions\Specification\QuestionOwner" autowire="true" autoconfigure="true">
       <argument type="service" id="App\Infrastructure\HttpKernel\EventListener\ApiUserIdentifier"/>
     </service>
-    <service id="App\Domain\Tags\Tag" class="App\Domain\Tags\Tag" autowire="true" autoconfigure="true"/>
-    <service id="App\Domain\Tags\Tag\TagId" class="App\Domain\Tags\Tag\TagId" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Questions\Tag" class="App\Domain\Questions\Tag" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Questions\Tag\TagId" class="App\Domain\Questions\Tag\TagId" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\UserManagement\OAuth2\AccessToken" class="App\Domain\UserManagement\OAuth2\AccessToken" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\UserManagement\OAuth2\Client" class="App\Domain\UserManagement\OAuth2\Client" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\UserManagement\OAuth2\RefreshToken" class="App\Domain\UserManagement\OAuth2\RefreshToken" autowire="true" autoconfigure="true"/>
@@ -232,7 +312,7 @@
     <service id="App\Domain\UserManagement\User\Email" class="App\Domain\UserManagement\User\Email" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\UserManagement\User\Password" class="App\Domain\UserManagement\User\Password" autowire="true" autoconfigure="true"/>
     <service id="App\Domain\UserManagement\User\UserId" class="App\Domain\UserManagement\User\UserId" autowire="true" autoconfigure="true"/>
-    <service id="App\Domain\Votes\Specification\AnswerVote" class="App\Domain\Votes\Specification\AnswerVote" autowire="true" autoconfigure="true"/>
+    <service id="App\Domain\Votes\Specification\UserVote" class="App\Domain\Votes\Specification\UserVote" autowire="true" autoconfigure="true"/>
     <service id="App\Infrastructure\CommandBus\ClassNameHandlerLocator" class="App\Infrastructure\CommandBus\ClassNameHandlerLocator" autowire="true" autoconfigure="true"/>
     <service id="App\Infrastructure\Events\LeagueEventListener" class="App\Infrastructure\Events\LeagueEventListener" autowire="true" autoconfigure="true">
       <argument type="service" id="League\Event\EmitterInterface"/>
@@ -249,8 +329,23 @@
       <tag name="kernel.event_listener" event="kernel.exception"/>
     </service>
     <service id="App\Infrastructure\HttpKernel\Oauth2Exception" class="App\Infrastructure\HttpKernel\Oauth2Exception" autowire="true" autoconfigure="true"/>
+    <service id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswerId" class="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswerId" autowire="true" autoconfigure="true"/>
+    <service id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository" class="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineDeleteOrphanTagsListener" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineDeleteOrphanTagsListener" autowire="true" autoconfigure="true">
+      <argument type="service" id="App\Infrastructure\Events\LeagueEventListener"/>
+      <argument type="service" id="doctrine.dbal.default_connection"/>
+    </service>
     <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionId" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionId" autowire="true" autoconfigure="true"/>
+    <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsListQuery" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsListQuery" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.dbal.default_connection"/>
+    </service>
     <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository" autowire="true" autoconfigure="true">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagId" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagId" autowire="true" autoconfigure="true"/>
+    <service id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagsRepository" class="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagsRepository" autowire="true" autoconfigure="true">
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
     </service>
     <service id="App\Infrastructure\Persistence\Doctrine\UserManagement\DoctrineUsersRepository" class="App\Infrastructure\Persistence\Doctrine\UserManagement\DoctrineUsersRepository" autowire="true" autoconfigure="true">
@@ -271,6 +366,54 @@
     <service id="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrineEmail" class="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrineEmail" autowire="true" autoconfigure="true"/>
     <service id="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrinePassword" class="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrinePassword" autowire="true" autoconfigure="true"/>
     <service id="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrineUserId" class="App\Infrastructure\Persistence\Doctrine\UserManagement\User\DoctrineUserId" autowire="true" autoconfigure="true"/>
+    <service id="App\UserInterface\Answers\CreateAnswerController" class="App\UserInterface\Answers\CreateAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\CreateAnswerController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Answers\DeleteAnswerController" class="App\UserInterface\Answers\DeleteAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\DeleteAnswerController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Answers\GetSpecificAnswerController" class="App\UserInterface\Answers\GetSpecificAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\GetSpecificAnswerController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Answers\SetAcceptAnswerController" class="App\UserInterface\Answers\SetAcceptAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\SetAcceptAnswerController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Answers\UpdateAnswerController" class="App\UserInterface\Answers\UpdateAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\UpdateAnswerController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Answers\VoteAnswerController" class="App\UserInterface\Answers\VoteAnswerController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Answers\VoteAnswerController"/>
+      </call>
+    </service>
     <service id="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" class="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="console.command"/>
@@ -293,12 +436,44 @@
         <argument type="service" id=".service_locator.SXie53V.App\UserInterface\PagesController"/>
       </call>
     </service>
-    <service id="App\UserInterface\Questions\CreateQuestion" class="App\UserInterface\Questions\CreateQuestion" public="true" autowire="true" autoconfigure="true">
+    <service id="App\UserInterface\Questions\CreateQuestionController" class="App\UserInterface\Questions\CreateQuestionController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
       <argument type="service" id="League\Tactician\CommandBus"/>
       <call method="setContainer">
-        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\CreateQuestion"/>
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\CreateQuestionController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Questions\DeleteQuestionController" class="App\UserInterface\Questions\DeleteQuestionController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\DeleteQuestionController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Questions\GetSpecificQuestionController" class="App\UserInterface\Questions\GetSpecificQuestionController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\GetSpecificQuestionController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Questions\QuestionsListController" class="App\UserInterface\Questions\QuestionsListController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="App\Application\Questions\QuestionsListQuery"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\QuestionsListController"/>
+      </call>
+    </service>
+    <service id="App\UserInterface\Questions\UpdateQuestionController" class="App\UserInterface\Questions\UpdateQuestionController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="League\Tactician\CommandBus"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.SXie53V.App\UserInterface\Questions\UpdateQuestionController"/>
       </call>
     </service>
     <service id="App\UserInterface\UserManagement\OAuth2\AuthTokenController" class="App\UserInterface\UserManagement\OAuth2\AuthTokenController" public="true" autowire="true" autoconfigure="true">
@@ -374,6 +549,7 @@
       <argument type="service" id="service_container"/>
     </service>
     <service id="League\Event\EmitterInterface" class="League\Event\Emmiter" public="true" autowire="true" autoconfigure="true"/>
+    <service id="App\Application\Questions\QuestionsListQuery" class="App\Infrastructure\Persistance\Doctrine\Questions\DoctrineQuestionsListQuery" autowire="true" autoconfigure="true"/>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory" public="false"/>
     <service id="response_listener" class="Symfony\Component\HttpKernel\EventListener\ResponseListener" public="false">
       <tag name="kernel.event_subscriber"/>
@@ -1160,14 +1336,6 @@
         <argument>2048</argument>
       </call>
       <call method="addListener">
-        <argument>console.command</argument>
-        <argument type="collection">
-          <argument type="service" id="debug.debug_handlers_listener"/>
-          <argument>configure</argument>
-        </argument>
-        <argument>2048</argument>
-      </call>
-      <call method="addListener">
         <argument>kernel.request</argument>
         <argument type="collection">
           <argument type="service" id="router_listener"/>
@@ -1891,6 +2059,24 @@
         <argument>doctrine:migrations:version</argument>
       </call>
     </service>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\CreateAnswerController" class="App\UserInterface\Answers\CreateAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\CreateAnswerController" class="App\UserInterface\Answers\CreateAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\CreateAnswerController" class="App\UserInterface\Answers\CreateAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\DeleteAnswerController" class="App\UserInterface\Answers\DeleteAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\DeleteAnswerController" class="App\UserInterface\Answers\DeleteAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\DeleteAnswerController" class="App\UserInterface\Answers\DeleteAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\GetSpecificAnswerController" class="App\UserInterface\Answers\GetSpecificAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\GetSpecificAnswerController" class="App\UserInterface\Answers\GetSpecificAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\GetSpecificAnswerController" class="App\UserInterface\Answers\GetSpecificAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\SetAcceptAnswerController" class="App\UserInterface\Answers\SetAcceptAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\SetAcceptAnswerController" class="App\UserInterface\Answers\SetAcceptAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\SetAcceptAnswerController" class="App\UserInterface\Answers\SetAcceptAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\UpdateAnswerController" class="App\UserInterface\Answers\UpdateAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\UpdateAnswerController" class="App\UserInterface\Answers\UpdateAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\UpdateAnswerController" class="App\UserInterface\Answers\UpdateAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Answers\VoteAnswerController" class="App\UserInterface\Answers\VoteAnswerController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Answers\VoteAnswerController" class="App\UserInterface\Answers\VoteAnswerController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Answers\VoteAnswerController" class="App\UserInterface\Answers\VoteAnswerController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" class="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" class="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Console\Command\Command.0.App\UserInterface\Command\UserManagement\UsersCreateCommand" class="App\UserInterface\Command\UserManagement\UsersCreateCommand" autowire="true" abstract="true"/>
@@ -1900,9 +2086,21 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\PagesController" class="App\UserInterface\PagesController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\PagesController" class="App\UserInterface\PagesController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\UserInterface\PagesController" class="App\UserInterface\PagesController" autowire="true" autoconfigure="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\CreateQuestion" class="App\UserInterface\Questions\CreateQuestion" autowire="true" abstract="true"/>
-    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\CreateQuestion" class="App\UserInterface\Questions\CreateQuestion" autowire="true" abstract="true"/>
-    <service id=".abstract.instanceof.App\UserInterface\Questions\CreateQuestion" class="App\UserInterface\Questions\CreateQuestion" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\CreateQuestionController" class="App\UserInterface\Questions\CreateQuestionController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\CreateQuestionController" class="App\UserInterface\Questions\CreateQuestionController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Questions\CreateQuestionController" class="App\UserInterface\Questions\CreateQuestionController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\DeleteQuestionController" class="App\UserInterface\Questions\DeleteQuestionController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\DeleteQuestionController" class="App\UserInterface\Questions\DeleteQuestionController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Questions\DeleteQuestionController" class="App\UserInterface\Questions\DeleteQuestionController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\GetSpecificQuestionController" class="App\UserInterface\Questions\GetSpecificQuestionController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\GetSpecificQuestionController" class="App\UserInterface\Questions\GetSpecificQuestionController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Questions\GetSpecificQuestionController" class="App\UserInterface\Questions\GetSpecificQuestionController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\QuestionsListController" class="App\UserInterface\Questions\QuestionsListController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\QuestionsListController" class="App\UserInterface\Questions\QuestionsListController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Questions\QuestionsListController" class="App\UserInterface\Questions\QuestionsListController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\Questions\UpdateQuestionController" class="App\UserInterface\Questions\UpdateQuestionController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\Questions\UpdateQuestionController" class="App\UserInterface\Questions\UpdateQuestionController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\UserInterface\Questions\UpdateQuestionController" class="App\UserInterface\Questions\UpdateQuestionController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\UserInterface\UserManagement\OAuth2\AuthTokenController" class="App\UserInterface\UserManagement\OAuth2\AuthTokenController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\UserInterface\UserManagement\OAuth2\AuthTokenController" class="App\UserInterface\UserManagement\OAuth2\AuthTokenController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\UserInterface\UserManagement\OAuth2\AuthTokenController" class="App\UserInterface\UserManagement\OAuth2\AuthTokenController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -1930,6 +2128,18 @@
         <argument key="url" type="service" id="container.env_var_processor"/>
       </argument>
     </service>
+    <service id=".service_locator.3xliQO6" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="user" type="service" id="App\Domain\UserManagement\User"/>
+      </argument>
+    </service>
+    <service id=".service_locator.sASZXgw" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="vote" type="service" id=".errored..service_locator.sASZXgw.App\Domain\Votes\Vote"/>
+      </argument>
+    </service>
     <service id=".service_locator.Khw2.YU" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection"/>
@@ -1947,15 +2157,16 @@
         <argument key="output" type="service" id=".errored..service_locator.1X_8VH_.Symfony\Component\Console\Output\OutputInterface"/>
       </argument>
     </service>
-    <service id=".service_locator.3xliQO6" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.ZBn8j0u" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
-        <argument key="user" type="service" id="App\Domain\UserManagement\User"/>
-      </argument>
-    </service>
-    <service id=".service_locator.Vx0XK92" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
-      <tag name="container.service_locator"/>
-      <argument type="collection">
+        <argument key="App\UserInterface\Answers\CreateAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\DeleteAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\GetSpecificAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\SetAcceptAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\UpdateAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\VoteAnswerController::handle" type="service" id=".service_locator.sASZXgw"/>
+        <argument key="App\UserInterface\Answers\VoteAnswerController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
         <argument key="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand::run" type="service" id=".service_locator.1X_8VH_"/>
         <argument key="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand::setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersCreateCommand::execute" type="service" id=".service_locator.1X_8VH_"/>
@@ -1963,8 +2174,18 @@
         <argument key="App\UserInterface\Command\UserManagement\UsersCreateCommand::setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersRemoveCommand::run" type="service" id=".service_locator.1X_8VH_"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersRemoveCommand::setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
-        <argument key="App\UserInterface\Questions\CreateQuestion::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\CreateQuestionController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\DeleteQuestionController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\GetSpecificQuestionController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\UpdateQuestionController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
         <argument key="App\UserInterface\UserManagement\UserInfoController::withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\CreateAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\DeleteAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\GetSpecificAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\SetAcceptAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\UpdateAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Answers\VoteAnswerController:handle" type="service" id=".service_locator.sASZXgw"/>
+        <argument key="App\UserInterface\Answers\VoteAnswerController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
         <argument key="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand:run" type="service" id=".service_locator.1X_8VH_"/>
         <argument key="App\UserInterface\Command\UserManagement\OAuth2\OAuth2ClientsCreateCommand:setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersCreateCommand:execute" type="service" id=".service_locator.1X_8VH_"/>
@@ -1972,7 +2193,10 @@
         <argument key="App\UserInterface\Command\UserManagement\UsersCreateCommand:setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersRemoveCommand:run" type="service" id=".service_locator.1X_8VH_"/>
         <argument key="App\UserInterface\Command\UserManagement\UsersRemoveCommand:setHelperSet" type="service" id=".service_locator.o6wy8_U"/>
-        <argument key="App\UserInterface\Questions\CreateQuestion:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\CreateQuestionController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\DeleteQuestionController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\GetSpecificQuestionController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
+        <argument key="App\UserInterface\Questions\UpdateQuestionController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
         <argument key="App\UserInterface\UserManagement\UserInfoController:withCurrentUser" type="service" id=".service_locator.3xliQO6"/>
       </argument>
     </service>
@@ -2044,15 +2268,75 @@
         <argument key="session" type="service" id="session" on-invalid="ignore"/>
       </argument>
     </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\CreateAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\CreateAnswerController"/>
+      <argument>App\UserInterface\Answers\CreateAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\DeleteAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\DeleteAnswerController"/>
+      <argument>App\UserInterface\Answers\DeleteAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\GetSpecificAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\GetSpecificAnswerController"/>
+      <argument>App\UserInterface\Answers\GetSpecificAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\SetAcceptAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\SetAcceptAnswerController"/>
+      <argument>App\UserInterface\Answers\SetAcceptAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\UpdateAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\UpdateAnswerController"/>
+      <argument>App\UserInterface\Answers\UpdateAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Answers\VoteAnswerController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Answers\VoteAnswerController"/>
+      <argument>App\UserInterface\Answers\VoteAnswerController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
     <service id=".service_locator.SXie53V.App\UserInterface\PagesController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator_context" id="App\UserInterface\PagesController"/>
       <argument>App\UserInterface\PagesController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.SXie53V" method="withContext"/>
     </service>
-    <service id=".service_locator.SXie53V.App\UserInterface\Questions\CreateQuestion" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
-      <tag name="container.service_locator_context" id="App\UserInterface\Questions\CreateQuestion"/>
-      <argument>App\UserInterface\Questions\CreateQuestion</argument>
+    <service id=".service_locator.SXie53V.App\UserInterface\Questions\CreateQuestionController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Questions\CreateQuestionController"/>
+      <argument>App\UserInterface\Questions\CreateQuestionController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Questions\DeleteQuestionController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Questions\DeleteQuestionController"/>
+      <argument>App\UserInterface\Questions\DeleteQuestionController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Questions\GetSpecificQuestionController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Questions\GetSpecificQuestionController"/>
+      <argument>App\UserInterface\Questions\GetSpecificQuestionController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Questions\QuestionsListController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Questions\QuestionsListController"/>
+      <argument>App\UserInterface\Questions\QuestionsListController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.SXie53V" method="withContext"/>
+    </service>
+    <service id=".service_locator.SXie53V.App\UserInterface\Questions\UpdateQuestionController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator_context" id="App\UserInterface\Questions\UpdateQuestionController"/>
+      <argument>App\UserInterface\Questions\UpdateQuestionController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.SXie53V" method="withContext"/>
     </service>
@@ -2138,13 +2422,14 @@
       <argument type="service" id="sensio_framework_extra.psr7.http_message_factory"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.Vx0XK92"/>
+      <argument type="service" id=".service_locator.ZBn8j0u"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.Vx0XK92"/>
+      <argument type="service" id=".service_locator.ZBn8j0u"/>
     </service>
+    <service id=".errored..service_locator.sASZXgw.App\Domain\Votes\Vote" class="App\Domain\Votes\Vote"/>
     <service id=".errored..service_locator.o6wy8_U.Symfony\Component\Console\Helper\HelperSet" class="Symfony\Component\Console\Helper\HelperSet"/>
     <service id=".errored..service_locator.1X_8VH_.Symfony\Component\Console\Input\InputInterface" class="Symfony\Component\Console\Input\InputInterface"/>
     <service id=".errored..service_locator.1X_8VH_.Symfony\Component\Console\Output\OutputInterface" class="Symfony\Component\Console\Output\OutputInterface"/>
@@ -2280,14 +2565,16 @@
     <service id="scopes.repository" alias="App\Infrastructure\Persistence\Doctrine\UserManagement\OAuth2\DoctrineScopesRepository"/>
     <service id="access.tokens.repository" alias="App\Infrastructure\Persistence\Doctrine\UserManagement\OAuth2\DoctrineAccessTokensRepository"/>
     <service id="refresh.tokens.repository" alias="App\Infrastructure\Persistence\Doctrine\UserManagement\OAuth2\DoctrineRefreshTokensRepository"/>
-    <service id="App\Domain\Events\DomainEvent" alias="App\Domain\Questions\Events\QuestionWasCreated" public="false"/>
-    <service id="App\Domain\Events\EventGenerator" alias="App\Domain\Questions\Question" public="false"/>
+    <service id="App\Application\Query" alias="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsListQuery" public="false"/>
+    <service id="App\Domain\Answers\AnswersRepository" alias="App\Infrastructure\Persistence\Doctrine\Answers\DoctrineAnswersRepository" public="false"/>
+    <service id="App\Domain\Events\EventListener" alias="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineDeleteOrphanTagsListener" public="false"/>
     <service id="App\Domain\Events\EventPublisher" alias="App\Infrastructure\Events\LeagueEventListener" public="false"/>
     <service id="App\Domain\Questions\QuestionsRepository" alias="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineQuestionsRepository" public="false"/>
+    <service id="App\Domain\Questions\Tag\TagsRepository" alias="App\Infrastructure\Persistence\Doctrine\Questions\DoctrineTagsRepository" public="false"/>
     <service id="App\Domain\UserManagement\OAuth2\ClientsRepository" alias="App\Infrastructure\Persistence\Doctrine\UserManagement\OAuth2\DoctrineClientsRepository" public="false"/>
     <service id="App\Domain\UserManagement\UserIdentifier" alias="App\Infrastructure\HttpKernel\EventListener\ApiUserIdentifier" public="false"/>
     <service id="App\Domain\UserManagement\UsersRepository" alias="App\Infrastructure\Persistence\Doctrine\UserManagement\DoctrineUsersRepository" public="false"/>
-    <service id="App\Domain\Votes\VoteSpecification" alias="App\Domain\Votes\Specification\AnswerVote" public="false"/>
+    <service id="App\Domain\Votes\VoteSpecification" alias="App\Domain\Votes\Specification\UserVote" public="false"/>
     <service id="Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface" alias="parameter_bag" public="false"/>
     <service id="Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface" alias="parameter_bag" public="false"/>
     <service id="Symfony\Component\EventDispatcher\EventDispatcherInterface" alias="debug.event_dispatcher" public="false"/>
@@ -2342,7 +2629,7 @@
     <service id="doctrine.orm.default_query_cache" alias="doctrine.orm.cache.provider.cache.doctrine.orm.default.query" public="false"/>
     <service id="doctrine.orm.default_entity_manager.event_manager" alias="doctrine.dbal.default_connection.event_manager" public="false"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.CmORmuK" public="true"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.Vx0XK92"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.ZBn8j0u"/>
     <service id="Psr\Log\LoggerInterface" alias="logger" public="false"/>
     <service id="event_dispatcher" alias="debug.event_dispatcher" public="true"/>
     <service id="controller_resolver" alias="debug.controller_resolver" public="false"/>

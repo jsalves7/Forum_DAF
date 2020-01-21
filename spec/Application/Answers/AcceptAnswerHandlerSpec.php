@@ -68,14 +68,4 @@ class AcceptAnswerHandlerSpec extends ObjectBehavior
         $eventPublisher->publishEventsFrom($answer)->shouldHaveBeenCalled();
     }
 
-    function it_throws_an_exception_when_user_is_not_the_owner(QuestionOwner $questionOwner, Question $question)
-    {
-        $command = new AcceptAnswerCommand(
-            $this->answerId
-        );
-        $questionOwner->isSatisfiedBy($question)->willReturn(false);
-        $this->shouldThrow(InvalidQuestionOwner::class)
-            ->during('handle', [$command]);
-    }
-
 }

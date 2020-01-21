@@ -1,11 +1,9 @@
 <?php //%255BApp%255CDomain%255CUserManagement%255COAuth2%255CRefreshToken%255D%255B1%255D
 
-namespace Symfony\Component\VarExporter\Internal;
-
-return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
     $o = [
-        clone (($p = &Registry::$prototypes)['Doctrine\\ORM\\Mapping\\Entity'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Entity')),
-        clone ($p['Doctrine\\ORM\\Mapping\\Table'] ?? Registry::p('Doctrine\\ORM\\Mapping\\Table')),
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Mapping\\Entity'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\Entity')),
+        clone ($p['Doctrine\\ORM\\Mapping\\Table'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\Table')),
     ],
     null,
     [
@@ -20,4 +18,4 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
         $o[1],
     ],
     []
-);
+); }];

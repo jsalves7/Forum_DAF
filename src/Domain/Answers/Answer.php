@@ -23,8 +23,14 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity()
  * @ORM\Table(name="answers")
+ *
+ * @IgnoreAnnotation("OA\Schema")
+ * @IgnoreAnnotation("OA\Property")
+ * @IgnoreAnnotation("OA\Items")
+ *
+ * @OA\Schema()
  */
-class Answer implements EventGenerator, Comparable
+class Answer implements EventGenerator, Comparable, \JsonSerializable
 {
 
     use EventGeneratorMethods;
@@ -35,6 +41,13 @@ class Answer implements EventGenerator, Comparable
      * @ORM\Id()
      * @ORM\Column(type="AnswerId", name="id")
      * @ORM\GeneratedValue(strategy="NONE")
+     *
+     * @OA\Property(
+     *     type="string",
+     *     description="Answer identifier",
+     *     example="e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+     * )
+     *
      */
     private $answerId;
 
@@ -42,6 +55,12 @@ class Answer implements EventGenerator, Comparable
      * @var QuestionId
      *
      * @ORM\Column(type="QuestionId", name="question_id")
+     *
+     * @OA\Property(
+     *     type="string",
+     *     description="Question identifier",
+     *     example="e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+     * )
      */
     private $questionId;
 
@@ -49,6 +68,12 @@ class Answer implements EventGenerator, Comparable
      * @var UserId
      *
      * @ORM\Column(type="UserId", name="user_id")
+     *
+     * @OA\Property(
+     *     type="string",
+     *     description="User identifier",
+     *     example="e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+     * )
      */
     private $userId;
 
@@ -56,6 +81,11 @@ class Answer implements EventGenerator, Comparable
      * @var string
      *
      * @ORM\Column()
+     *
+     * @OA\Property(
+     *     description="Answer body",
+     *     example="Yeah, off course I can help you, it is three o’clock."
+     * )
      */
     private $description;
 
@@ -63,6 +93,11 @@ class Answer implements EventGenerator, Comparable
      * @var DateTimeImmutable
      *
      * @ORM\Column(type="datetime_immutable")
+     *
+     * @OA\Property(
+     *     ref="#/components/schemas/DateTime",
+     *     description="Date and time answer was given"
+     * )
      */
     private $givenOn;
 
@@ -70,6 +105,11 @@ class Answer implements EventGenerator, Comparable
      * @var bool
      *
      * @ORM\Column()
+     *
+     * @OA\Property(
+     *     example=false,
+     *     description="Flag the accepted/unaccepted answer state"
+     * )
      */
     private $accepted = false;
 
@@ -77,6 +117,11 @@ class Answer implements EventGenerator, Comparable
      * @var bool
      *
      * @ORM\Column()
+     *
+     * @OA\Property(
+     *     example=false,
+     *     description="Flag the voted/non voted answer"
+     * )
      */
     private $voted = false;
 
@@ -84,6 +129,11 @@ class Answer implements EventGenerator, Comparable
      * @var DateTimeImmutable
      *
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     *
+     * @OA\Property(
+     *     ref="#/components/schemas/DateTime",
+     *     description="Date and time answer was last edited"
+     * )
      */
     private $lastEditedOn;
 
@@ -91,6 +141,11 @@ class Answer implements EventGenerator, Comparable
      * @var int
      *
      * @ORM\Column(type="integer")
+     *
+     * @OA\Property(
+     *     description="Positive votes",
+     *     example=10
+     * )
      */
     private $positiveVotes;
 
@@ -98,6 +153,11 @@ class Answer implements EventGenerator, Comparable
      * @var int
      *
      * @ORM\Column(type="integer")
+     *
+     * @OA\Property(
+     *     description="Negative votes",
+     *     example=5
+     * )
      */
     private $negativeVotes;
 
@@ -234,4 +294,22 @@ class Answer implements EventGenerator, Comparable
     }
 
 
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'answerId' => $this->answerId,
+            'questionId' => $this->questionId,
+            'userId' => $this->userId,
+            'description' => $this->description,
+            'giveOn' => $this->givenOn,
+            'accepted' => $this->accepted,
+            'voted' => $this->voted,
+            'lastEditedOn' => $this->lastEditedOn,
+            'positiveVotes' => $this->positiveVotes,
+            'negativeVotes' => $this->negativeVotes,
+        ];
+    }
 }

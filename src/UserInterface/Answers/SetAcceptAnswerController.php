@@ -80,3 +80,31 @@ class SetAcceptAnswerController extends AbstractController implements Authentica
         return $this;
     }
 }
+
+/**
+ * @OA\Patch(
+ *     path="/answers/{answerId}/set-as-accepted",
+ *     tags={"Answers"},
+ *     summary="Mark an answer as the accepted one",
+ *     description="Marks the answer as the accepted one for its question",
+ *     operationId="AcceptAnswer",
+ *     @OA\Parameter(
+ *         name="answerId",
+ *         in="path",
+ *         description="id of answer to mark as correct",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="The updated answer",
+ *         @OA\JsonContent(ref="#/components/schemas/Answer")
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */
+

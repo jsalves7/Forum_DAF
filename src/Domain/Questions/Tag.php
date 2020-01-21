@@ -14,6 +14,11 @@ use Exception;
  *
  * @ORM\Entity()
  * @ORM\Table(name="tags")
+ *
+ * @IgnoreAnnotation("OA\Schema")
+ * @IgnoreAnnotation("OA\Property")
+ *
+ * @OA\Schema()
  */
 class Tag implements Stringable, \JsonSerializable
 {
@@ -24,6 +29,12 @@ class Tag implements Stringable, \JsonSerializable
      * @ORM\Id()
      * @ORM\Column(type="TagId", name="id")
      * @ORM\GeneratedValue(strategy="NONE")
+     *
+     * @OA\Property(
+     *     type="string",
+     *     description="Tag identifier",
+     *     example="e1026e90-9b21-4b6d-b06e-9c592f7bdb82"
+     * )
      */
     private $tagId;
 
@@ -31,6 +42,10 @@ class Tag implements Stringable, \JsonSerializable
      * @var string
      *
      * @ORM\Column()
+     *
+     * @OA\Property(
+     *     description="Tag description"
+     * )
      */
     private $description;
 

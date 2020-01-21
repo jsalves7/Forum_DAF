@@ -60,7 +60,6 @@ class DeleteAnswerHandlerSpec extends ObjectBehavior
 
         $this->handle($command)->shouldBe($answer);
         $answers->remove($answer)->shouldHaveBeenCalled();
-        $eventPublisher->publishEventsFrom($answer)->shouldHaveBeenCalled();
     }
 
     function it_throws_an_exception_when_user_is_not_the_owner(

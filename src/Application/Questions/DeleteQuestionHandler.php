@@ -4,6 +4,7 @@ namespace App\Application\Questions;
 
 use App\Domain\Events\EventPublisher;
 use App\Domain\Exceptions\InvalidQuestionOwner;
+use App\Domain\Questions\Events\QuestionWasDeleted;
 use App\Domain\Questions\QuestionsRepository;
 use App\Domain\Questions\Specification\QuestionOwner;
 
@@ -36,6 +37,11 @@ class DeleteQuestionHandler
         $this->eventPublisher = $eventPublisher;
     }
 
+    /**
+     * @param DeleteQuestionCommand $command
+     * @return \App\Domain\Questions\Question
+     * @throws \Exception
+     */
     public function handle(DeleteQuestionCommand $command)
     {
         $question = $this->questions->withId($command->questionId());
@@ -46,7 +52,9 @@ class DeleteQuestionHandler
             );
         }
 
-        $this->eventPublisher->publishEventsFrom($this->questions->remove($question));
+        $this->questions->remove($question);
+        $this->eventPublisher->publish(new QuestionWasDeleted($question));
+        return $question;
     }
 
 }

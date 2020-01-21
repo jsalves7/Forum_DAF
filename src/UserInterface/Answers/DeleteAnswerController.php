@@ -79,3 +79,29 @@ class DeleteAnswerController extends AbstractController implements Authenticated
         return $this;
     }
 }
+
+/**
+ * @OA\Delete(
+ *     path="/answers/{answerId}",
+ *     tags={"Answers"},
+ *     summary="Deletes an answer",
+ *     description="Delete the answer that matches the provided answer ID",
+ *     operationId="DeleteAnswer",
+ *     @OA\Parameter(
+ *         name="answerId",
+ *         in="path",
+ *         description="id of answer to delete",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=204,
+ *         description="The answer was deleted",
+ *     ),
+ *     security={
+ *         {"OAuth2.0-Token": {}}
+ *     },
+ * )
+ */
